@@ -71,7 +71,7 @@ curl -sSL https://raw.githubusercontent.com/lanyijianke/AnySkill/main/init.sh | 
 
 ---
 
-## 🎯 八种操作模式
+## 🎯 九种操作模式
 
 所有操作均通过自然语言触发，无需记忆任何命令。
 
@@ -85,6 +85,7 @@ curl -sSL https://raw.githubusercontent.com/lanyijianke/AnySkill/main/init.sh | 
 | **列出技能** | "列出技能" / "有哪些技能" | 展示云端所有可用技能列表 |
 | **删除技能** | "删除 XX 技能" / "移除 XX" | 从云端仓库删除指定技能文件夹 |
 | **删除仓库** | "删除整个仓库" | ⚠️ 需人工操作，AI 仅提供指引 |
+| **组合包** | "安装 XX 组合包" / "有哪些组合包" | 批量安装预制技能套装 |
 
 ---
 
@@ -128,6 +129,10 @@ AnySkill/
 │   └── build-index.yml           # GitHub Actions: push 后自动重建 index.json
 ├── loader/anyskill/
 │   └── SKILL.md                  # 引擎文件（安装到你的项目中）
+├── bundles/                      # 技能组合包
+│   ├── content-creation.json     # 内容创作套装
+│   ├── data-crawling.json        # 数据采集套装
+│   └── tech-development.json     # 技术开发套装
 ├── skills/                       # 你的技能文件夹放这里
 │   └── hello-world/              # 示例技能，可删除
 │       └── SKILL.md

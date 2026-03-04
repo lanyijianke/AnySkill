@@ -280,6 +280,38 @@ git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
 
 ---
 
+## 模式九：安装技能组合包
+
+当用户明确说 **"安装 XX 组合包"、"我要 XX 套装"、"有哪些组合包"** 等类似指令时：
+
+### 查看可用组合包
+
+拉取 `https://raw.githubusercontent.com/{repo}/{branch}/bundles/` 目录下的所有 `.json` 文件，展示列表：
+
+| 组合包 | 描述 | 包含技能数 |
+|:---|:---|:---|
+| `{name}` | `{description}` | `{skills.length}` |
+
+### 安装指定组合包
+
+1. 读取对应的 bundle JSON 文件。
+2. 获取其中的 `skills` 数组。
+3. 按照**模式一（按需加载）**或**模式二（按需下载）**的流程，批量处理数组中的所有技能。
+4. 完成后告知用户：
+   > ✅ 组合包 `{name}` 安装完毕！已加载 {N} 个技能。
+
+### 组合包格式
+
+```json
+{
+  "name": "组合包名称",
+  "description": "功能描述",
+  "skills": ["skill-a", "skill-b", "skill-c"]
+}
+```
+
+---
+
 ## 行为准则
 
 * 永远不要猜测细节，必须依赖云端获取"注入能力"。
