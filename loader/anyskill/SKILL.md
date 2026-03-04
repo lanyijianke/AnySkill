@@ -64,21 +64,26 @@ git clone https://{token}@github.com/{repo}.git {localPath}
 
 用户提供 GitHub Token 后：
 1. 询问用户希望的仓库名称（默认建议 `my-anyskill`）。
-2. 调用 GitHub Template API 创建私有仓库：
+2. 通过 Token 自动获取用户的 GitHub 用户名：
+```bash
+curl -s -H "Authorization: token {用户的token}" https://api.github.com/user
+```
+从返回的 JSON 中提取 `login` 字段，即为用户名。
+3. 调用 GitHub Template API 创建私有仓库：
 ```bash
 curl -X POST https://api.github.com/repos/lanyijianke/AnySkill/generate \
   -H "Authorization: token {用户的token}" \
   -H "Accept: application/vnd.github+json" \
-  -d '{"owner":"{用户名}","name":"{仓库名}","private":true,"description":"My AnySkill private skill repository"}'
+  -d '{"owner":"{login}","name":"{仓库名}","private":true,"description":"My AnySkill private skill repository"}'
 ```
-3. 等待几秒让 GitHub 完成仓库初始化，然后 clone 到本地：
+4. 等待几秒让 GitHub 完成仓库初始化，然后 clone 到本地：
 ```bash
-git clone https://{token}@github.com/{用户名}/{仓库名}.git /tmp/{仓库名}
+git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
 ```
-4. 在项目根目录创建 `.anyskill.json`：
+5. 在项目根目录创建 `.anyskill.json`：
 ```json
 {
-  "repo": "{用户名}/{仓库名}",
+  "repo": "{login}/{仓库名}",
   "branch": "main",
   "token": "ghp_xxxxxxxxxxxx",
   "localPath": "/tmp/{仓库名}"
