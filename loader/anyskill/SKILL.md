@@ -32,7 +32,15 @@ Authorization: token {token}
 > 你已经有自己的云端技能仓库了吗？
 >
 > **A.** 已经有了 — 请告诉我仓库地址（格式：`用户名/仓库名`）
-> **B.** 还没有 — 我可以帮你一键创建！只需要提供你的 GitHub Personal Access Token（需要 `repo` 权限）
+> **B.** 还没有 — 我可以帮你一键创建！
+>
+> 无论哪种方式，如果你的仓库是**私有的**，都需要提供一个 GitHub Token。请按以下步骤创建：
+>
+> 1. 打开 [github.com/settings/tokens](https://github.com/settings/tokens)
+> 2. 点击 **"Generate new token"** → 选择 **"Generate new token (classic)"**（⚠️ 必须选 Classic，不要选 Fine-grained）
+> 3. 勾选以下权限：
+>    - ✅ **`repo`**（完整的仓库访问权限 — 读写私有仓库 + 从模板创建仓库）
+> 4. 生成后复制 Token（以 `ghp_` 开头），粘贴给我即可
 
 #### 路径 A：用户已有仓库
 
