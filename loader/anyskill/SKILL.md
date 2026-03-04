@@ -128,7 +128,7 @@ Authorization: token {token}
 
 **在向用户提问之前，必须先静默检测是否已有可用 Token：**
 1. 检查环境变量 `ANYSKILL_GITHUB_TOKEN` 是否存在。
-2. 如果**已存在**（说明用户之前在本机用过 AnySkill，Token 已持久化在 `~/.openclaw/.env` 等位置）：
+2. 如果**已存在**（说明用户之前在本机已配置过 AnySkill）：
    - **不要向用户索取 Token**，直接跳转到下方「路径 B：用户只提供了 Token」的自动发现流程。
    - 整个过程对用户完全静默，体验为：AI 自动探测到云端仓库 → 确认挂载 → 写入全局配置 → 就绪。
 3. 如果**不存在**，才向用户发起引导对话（见下方）。
@@ -139,19 +139,21 @@ Authorization: token {token}
 
 **你应该这样对用户说：**
 
-> 👋 初次见面！在此设备上未检测到 AnySkill 配置。
-> 为了加载你的云端技能，只需提供你的 **GitHub Token** 即可——我会自动帮你查找并挂载已有的技能库。
+> 👋 欢迎使用 AnySkill！我来帮你连接你的私人技能库。
 >
-> 💡 **只发 Token 就够了！** 我会自动搜索你的 GitHub 账号下是否已有技能仓库。如果有，直接挂载；如果没有，自动为你创建一个新的。
+> 请问你**是否已有**一个 AnySkill 技能仓库？
 >
-> 你也可以直接指定仓库：`ghp_xxx lanyijianke/my-skills`（Token + 仓库名，空格分隔）。
+> **A) 已有仓库** — 只需提供 Token 和仓库名：
+> `github_pat_xxx username/my-skills`（空格分隔）
 >
-> Token 创建方法：
-> 1. 打开 [github.com/settings/tokens?type=beta](https://github.com/settings/tokens?type=beta)
-> 2. 点击 **"Generate new token"**（Fine-grained 细粒度令牌）
-> 3. **Repository access** → 选 **Only select repositories** → 选择你的技能仓库（如果是第一次用、仓库还没创建，可以先选 "All repositories"，之后再改）
-> 4. **Permissions** → **Repository permissions** → 将 **Contents** 设为 **Read and write**
-> 5. 生成后复制 Token（以 `github_pat_` 开头），粘贴给我即可
+> **B) 还没有仓库** — 2 步搞定（手机/电脑都行）：
+> 1️⃣ 打开链接创建私有仓库 👉 [一键创建](https://github.com/lanyijianke/AnySkill/generate)
+>    仓库名建议 `my-skills`，**务必勾选 Private**
+> 2️⃣ 创建 Token 👉 [创建 Fine-grained Token](https://github.com/settings/tokens?type=beta)
+>    → **Repository access** → **Only select repositories** → 选你刚创建的仓库
+>    → **Permissions** → **Contents** → **Read and write**
+>
+> 准备好了就把 Token（和仓库名）发过来吧！
 
 #### 用户回复后的处理逻辑
 
@@ -167,12 +169,13 @@ Authorization: token {token}
 用户提供仓库地址和 Token 后：
 1. 询问用户希望将仓库 clone 到本地的哪个位置（默认建议 `/tmp/{仓库名}`）。
 2. **安全存储 Token**（根据 IDE 环境区分）：
-   - **OpenClaw**：将 Token 写入 `~/.openclaw/.env` 文件（追加一行 `ANYSKILL_GITHUB_TOKEN=ghp_xxx`），**不要** 将 token 写入配置文件。
+   - **OpenClaw**：将 Token 写入 `~/.openclaw/.env` 文件（追加一行 `ANYSKILL_GITHUB_TOKEN=github_pat_xxx`），**不要** 将 token 写入配置文件。
    - **其他 IDE（Antigravity/Claude Code/Cursor）**：将 token 写入配置文件。
 3. 执行 clone：
 ```bash
-git clone https://{token}@github.com/{repo}.git {localPath}
+git clone https://github.com/{repo}.git {localPath}
 ```
+（通过 `GIT_ASKPASS` 或凭据助手传递 Token，不要将 Token 嵌入 URL。）
 4. 创建**全局配置文件** `~/.anyskill/config.json`：
 
 **OpenClaw 版本**（不含 token）：
@@ -189,7 +192,7 @@ git clone https://{token}@github.com/{repo}.git {localPath}
 {
   "repo": "用户提供的地址",
   "branch": "main",
-  "token": "ghp_xxxxxxxxxxxx",
+  "token": "github_pat_xxxxxxxxxxxx",
   "localPath": "/tmp/{仓库名}"
 }
 ```
@@ -228,31 +231,18 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
   然后自动执行 clone 和配置写入（同路径 A 的步骤 1-4），**不再询问多余问题**。
 
 - **❌ 未探测到任何技能库**（确认为纯新用户）：
-  1. 根据当前 IDE 环境选择默认仓库名，并询问用户是否需要自定义：
-     - **OpenClaw** → 默认建议 `my-skills-claw`（个人助手技能库）
-     - **Antigravity / Claude Code / Cursor** → 默认建议 `my-skills-dev`（开发技能库）
-  2. 调用 GitHub Template API 创建私有仓库：
-  ```bash
-  curl -X POST https://api.github.com/repos/lanyijianke/AnySkill/generate \
-    -H "Authorization: token {token}" \
-    -H "Accept: application/vnd.github+json" \
-    -d '{"owner":"{login}","name":"{仓库名}","private":true,"description":"My AnySkill private skill repository"}'
-  ```
-   3. 等待几秒让 GitHub 完成仓库初始化，然后 clone 到本地：
-   ```bash
-   git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
-   ```
-   4. **清理模板残留文件**（这些文件只在上游模板仓库中有用，用户私有仓库不需要）：
-   ```bash
-   cd /tmp/{仓库名}
-   rm -rf loader/ init.sh
-   echo "# My AnySkill Skills" > README.md
-   git add -A
-   git commit -m "chore: clean up template files"
-   git push origin {branch}
-   ```
-   5. **安全存储 Token**（同路径 A 的规则）。
-   6. 创建全局配置文件 `~/.anyskill/config.json`（格式同路径 A）。
+
+  告知用户需要先创建仓库：
+  > 我没有找到你名下的技能仓库。请先创建一个：
+  >
+  > 👉 [一键创建技能仓库](https://github.com/lanyijianke/AnySkill/generate)
+  >
+  > 仓库名建议 `my-skills`，**务必勾选 Private**。
+  > 创建完成后告诉我仓库名，我来完成剩下的配置！
+
+  等用户提供仓库名后，执行 clone 和配置写入（同路径 A 的步骤 1-4）。
+
+  > 💡 **安全提示**：仓库创建好后，建议回到 Token 设置页面，将 **Repository access** 改为 **Only select repositories** 并仅选中这个仓库，以获得最小权限。
 
 #### 初始化完成
 

@@ -156,19 +156,21 @@ Guide the user through initialization via natural language conversation. **The u
 
 **Say something like this to the user:**
 
-> 👋 Nice to meet you! No AnySkill configuration detected on this device.
-> To load your cloud skills, simply provide your **GitHub Token** — I'll automatically find and mount your existing skill repository.
+> 👋 Welcome to AnySkill! Let me help you connect your private skill repository.
 >
-> 💡 **Just send the Token!** I'll automatically search your GitHub account for an existing skill repository. If found, I'll mount it directly; if not, I'll create a new one for you.
+> Do you **already have** an AnySkill skill repository?
 >
-> You can also specify a repository directly: `ghp_xxx username/my-skills` (Token + repo name, space-separated).
+> **A) I have a repo** — Just provide your Token and repo name:
+> `github_pat_xxx username/my-skills` (space-separated)
 >
-> How to create a Token:
-> 1. Go to [github.com/settings/tokens?type=beta](https://github.com/settings/tokens?type=beta)
-> 2. Click **"Generate new token"** (Fine-grained)
-> 3. Set **Repository access** → **Only select repositories** → choose your skill repository (or "All repositories" if this is your first time and the repo hasn't been created yet)
-> 4. Under **Permissions** → **Repository permissions** → set **Contents** to **Read and write**
-> 5. After generating, copy the Token (starts with `github_pat_`) and paste it to me
+> **B) I don't have one yet** — 2 easy steps (works on mobile too):
+> 1️⃣ Create a private repo 👉 [One-click create](https://github.com/lanyijianke/AnySkill/generate)
+>    Suggested name: `my-skills`, **make sure to check Private**
+> 2️⃣ Create a Token 👉 [Create Fine-grained Token](https://github.com/settings/tokens?type=beta)
+>    → **Repository access** → **Only select repositories** → pick the repo you just created
+>    → **Permissions** → **Contents** → **Read and write**
+>
+> Send me your Token (and repo name) when you're ready!
 
 #### Handling User Response
 
@@ -207,7 +209,7 @@ git clone https://github.com/{repo}.git {localPath}
 {
   "repo": "user-provided-address",
   "branch": "main",
-  "token": "ghp_xxxxxxxxxxxx",
+  "token": "github_pat_xxxxxxxxxxxx",
   "localPath": "/tmp/{repo-name}"
 }
 ```
@@ -246,32 +248,18 @@ If `index.json` can be read successfully, this repo is a genuine AnySkill skill 
   Then auto-execute clone and config write (same as Path A steps 1-4), **without asking unnecessary questions**.
 
 - **❌ No skill repo detected** (confirmed as a brand new user):
-  1. Choose a default repo name based on the current IDE environment, and ask if the user wants to customize:
-     - **OpenClaw** → Default suggestion: `my-skills-claw` (personal assistant skill repository)
-     - **Antigravity / Claude Code / Cursor** → Default suggestion: `my-skills-dev` (development skill repository)
-  2. Use the GitHub Template API to create a private repo:
-  ```bash
-  curl -X POST https://api.github.com/repos/lanyijianke/AnySkill/generate \
-    -H "Authorization: token {token}" \
-    -H "Accept: application/vnd.github+json" \
-    -d '{"owner":"{login}","name":"{repo-name}","private":true,"description":"My AnySkill private skill repository"}'
-  ```
-   3. Wait a few seconds for GitHub to finish repo initialization, then clone locally:
-   ```bash
-   git clone https://github.com/{login}/{repo-name}.git /tmp/{repo-name}
-   # Authenticate via GIT_ASKPASS or credential helper, not via URL
-   ```
-   4. **Clean up template residual files** (these files are only useful in the upstream template repo, not needed in the user's private repo):
-   ```bash
-   cd /tmp/{repo-name}
-   rm -rf loader/ init.sh
-   echo "# My AnySkill Skills" > README.md
-   git add -A
-   git commit -m "chore: clean up template files"
-   git push origin {branch}
-   ```
-   5. **Securely store Token** (same rules as Path A).
-   6. Create global config file `~/.anyskill/config.json` (same format as Path A).
+
+  Guide the user to create a repo first:
+  > I couldn't find a skill repository under your account. Please create one first:
+  >
+  > 👉 [One-click create skill repository](https://github.com/lanyijianke/AnySkill/generate)
+  >
+  > Suggested name: `my-skills`, **make sure to check Private**.
+  > Once created, tell me the repo name and I'll finish the setup!
+
+  After the user provides the repo name, execute clone and config write (same as Path A steps 1-4).
+
+  > 💡 **Security tip**: After the repo is created, go back to your Token settings and change **Repository access** to **Only select repositories**, selecting only this repo for minimal permissions.
 
 #### Initialization Complete
 
