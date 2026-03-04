@@ -45,6 +45,7 @@ Authorization: token {token}
 4. 尝试拉取 `index.json` 确认连接正常。
 5. 告知用户：
    > ✅ 已检测到 AnySkill 配置，连接到仓库 `{repo}`。随时可以使用！
+6. **如果当前环境是 OpenClaw**：检查 `TOOLS.md` 是否已包含 `### AnySkill` 段落。如果不存在或技能列表已过时，执行下方「OpenClaw 专属：写入 Workspace 配置」步骤来注册/更新技能列表。
 
 如果验证失败（网络异常或仓库已删除），提示用户是否需要重新初始化。
 

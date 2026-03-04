@@ -62,6 +62,7 @@ The user has previously initialized on this machine. **Skip all initialization**
 4. Attempt to fetch `index.json` to confirm connectivity.
 5. Inform the user:
    > ✅ AnySkill configuration detected, connected to repository `{repo}`. Ready to use!
+6. **If current environment is OpenClaw**: Check if `TOOLS.md` already contains a `### AnySkill` section. If not, or if the skill list is outdated, execute the "OpenClaw Exclusive: Write Workspace Config" steps below to register/update the skill list.
 
 If verification fails (network error or repo deleted), ask the user if they want to re-initialize.
 
