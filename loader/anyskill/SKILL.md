@@ -210,12 +210,21 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
     -H "Accept: application/vnd.github+json" \
     -d '{"owner":"{login}","name":"{仓库名}","private":true,"description":"My AnySkill private skill repository"}'
   ```
-  3. 等待几秒让 GitHub 完成仓库初始化，然后 clone 到本地：
-  ```bash
-  git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
-  ```
-  4. **安全存储 Token**（同路径 A 的规则）。
-  5. 创建全局配置文件 `~/.anyskill/config.json`（格式同路径 A）。
+   3. 等待几秒让 GitHub 完成仓库初始化，然后 clone 到本地：
+   ```bash
+   git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
+   ```
+   4. **清理模板残留文件**（这些文件只在上游模板仓库中有用，用户私有仓库不需要）：
+   ```bash
+   cd /tmp/{仓库名}
+   rm -rf loader/ init.sh
+   echo "# My AnySkill Skills" > README.md
+   git add -A
+   git commit -m "chore: clean up template files"
+   git push origin {branch}
+   ```
+   5. **安全存储 Token**（同路径 A 的规则）。
+   6. 创建全局配置文件 `~/.anyskill/config.json`（格式同路径 A）。
 
 #### 初始化完成
 
