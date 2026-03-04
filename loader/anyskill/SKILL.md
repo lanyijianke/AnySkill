@@ -90,7 +90,7 @@ Authorization: token {token}
 1. 询问用户希望将仓库 clone 到本地的哪个位置（默认建议 `/tmp/{仓库名}`）。
 2. **安全存储 Token**（根据 IDE 环境区分）：
    - **OpenClaw**：将 Token 写入 `~/.openclaw/.env` 文件（追加一行 `ANYSKILL_GITHUB_TOKEN=ghp_xxx`），**不要** 将 token 写入配置文件。
-   - **其他 IDE（Gemini/Claude Code/Cursor）**：将 token 写入配置文件。
+   - **其他 IDE（Antigravity/Claude Code/Cursor）**：将 token 写入配置文件。
 3. 执行 clone：
 ```bash
 git clone https://{token}@github.com/{repo}.git {localPath}
@@ -174,6 +174,44 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 > 🔧 全局配置：`~/.anyskill/config.json`
 > 从现在起，无论在哪个项目中，你都可以加载、下载、发布技能了。
 
+#### OpenClaw 专属：写入 Workspace 配置（仅 OpenClaw 环境执行）
+
+如果当前环境是 **OpenClaw**（通过环境变量 `ANYSKILL_GITHUB_TOKEN` 存在于 `~/.openclaw/.env`、或用户明确指定、或检测到 `~/.openclaw/` 目录来判断），则在初始化完成后**额外执行以下两步**：
+
+**第一步：追加 `TOOLS.md`**
+
+找到 OpenClaw workspace 的 `TOOLS.md` 文件（路径：`~/.openclaw-config/workspace/TOOLS.md` 或 `{OpenClaw项目根}/.openclaw-config/workspace/TOOLS.md`）。
+
+先检查文件中是否已包含 `### AnySkill` 段落。如果**没有**，在文件末尾追加以下内容：
+
+```markdown
+
+### AnySkill
+
+- **技能仓库**: `{repo}`
+- **全局配置**: `~/.anyskill/config.json`
+- **本地路径**: `{localPath}`
+- **技能加载**: 当你缺少某个技能时，读取 `~/.openclaw/skills/anyskill/SKILL.md` 中的引导流程，从云端 AnySkill 仓库按需加载
+- **操作方式**: 所有技能管理（加载、下载、上传、列出、删除）均通过自然语言触发，无需命令行
+```
+
+如果已存在 `### AnySkill` 段落，则**更新**其中的仓库地址和本地路径，不要重复追加。
+
+**第二步：追加 `AGENTS.md`**
+
+找到 OpenClaw workspace 的 `AGENTS.md` 文件（与 `TOOLS.md` 同目录）。
+
+在文件中搜索 `## Tools` 段落。在该段落的**末尾**（下一个 `##` 标题之前），检查是否已包含 AnySkill 相关内容。如果**没有**，追加以下内容：
+
+```markdown
+
+**🧠 AnySkill 云端技能**: 当你需要执行特定任务（前端设计、API 集成、数据抓取等）但本地没有对应技能时，先检查 `~/.openclaw/skills/anyskill/SKILL.md` 中的 AnySkill 引导流程，从你的云端私有技能库中按需加载能力。
+```
+
+如果已存在 AnySkill 相关内容，跳过此步骤。
+
+> ⚠️ 这两个文件的**其他内容严禁修改**。只做追加或更新 AnySkill 段落，绝不覆盖用户已有的配置。
+
 然后继续执行用户的原始请求。
 
 ---
@@ -221,18 +259,18 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 
 | AI IDE | 落盘路径 | 入口文件 |
 |:---|:---|:---|
-| **Gemini (Antigravity)** | `{项目根目录}/.agent/skills/{skill-name}/` | `SKILL.md` |
+| **Antigravity** | `{项目根目录}/.agent/skills/{skill-name}/` | `SKILL.md` |
 | **Claude Code** | `{项目根目录}/.claude/skills/{skill-name}/` | `SKILL.md` |
 | **Cursor** | `{项目根目录}/.cursor/rules/{skill-name}/` | `SKILL.md` |
 | **OpenClaw** | `~/.openclaw/skills/{skill-name}/` | `SKILL.md` |
 
 ### IDE 自动识别逻辑
 
-- 如果当前项目存在 `.agent/` 目录 或你是 Gemini/Antigravity → 使用 **Gemini** 路径
+- 如果当前项目存在 `.agent/` 目录 或你是 Antigravity → 使用 **Antigravity** 路径
 - 如果当前项目存在 `.claude/` 目录 或你是 Claude Code → 使用 **Claude Code** 路径
 - 如果当前项目存在 `.cursor/` 目录 或你是 Cursor → 使用 **Cursor** 路径
 - 如果用户明确提到 OpenClaw → 使用 **OpenClaw** 路径
-- 如果无法判断 → **直接问用户**："你当前使用的是哪个 IDE？(Gemini/Claude Code/Cursor/OpenClaw)"
+- 如果无法判断 → **直接问用户**："你当前使用的是哪个 IDE？(Antigravity/Claude Code/Cursor/OpenClaw)"
 
 ---
 

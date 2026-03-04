@@ -53,7 +53,7 @@ echo ""
 # Step 2: Choose IDE
 echo "选择你要安装破冰者 Skill 的 AI IDE:"
 echo ""
-echo "  1) Gemini / Antigravity  (.agent/skills/anyskill/)"
+echo "  1) Antigravity           (.agent/skills/anyskill/)"
 echo "  2) Claude Code           (.claude/skills/anyskill/)"
 echo "  3) Cursor                (.cursor/rules/)"
 echo "  4) OpenClaw              (~/.openclaw/skills/anyskill/)"
@@ -61,7 +61,7 @@ echo "  5) 全部安装"
 echo ""
 read -p "选择 [1-5]: " choice
 
-install_gemini() {
+install_antigravity() {
   local dir=".agent/skills/anyskill"
   mkdir -p "$dir"
   curl -sSL "$LOADER_URL" -o "$dir/SKILL.md"
@@ -87,14 +87,62 @@ install_openclaw() {
   mkdir -p "$dir"
   curl -sSL "$LOADER_URL" -o "$dir/SKILL.md"
   echo -e "${GREEN}✅ 已安装到 $dir/SKILL.md${NC}"
+
+  # Patch OpenClaw workspace config files
+  local ws_tools="$HOME/.openclaw-config/workspace/TOOLS.md"
+  local ws_agents="$HOME/.openclaw-config/workspace/AGENTS.md"
+
+  # Append AnySkill section to TOOLS.md if not already present
+  if [ -f "$ws_tools" ]; then
+    if ! grep -q "### AnySkill" "$ws_tools"; then
+      cat >> "$ws_tools" << 'TOOLSEOF'
+
+### AnySkill
+
+- **全局配置**: `~/.anyskill/config.json`
+- **技能加载**: 当你缺少某个技能时，读取 `~/.openclaw/skills/anyskill/SKILL.md` 中的引导流程，从云端 AnySkill 仓库按需加载
+- **操作方式**: 所有技能管理（加载、下载、上传、列出、删除）均通过自然语言触发，无需命令行
+TOOLSEOF
+      echo -e "${GREEN}✅ 已更新 TOOLS.md${NC}"
+    else
+      echo -e "${YELLOW}ℹ️  TOOLS.md 中已有 AnySkill 段落，跳过${NC}"
+    fi
+  fi
+
+  # Append AnySkill hint to AGENTS.md Tools section if not already present
+  if [ -f "$ws_agents" ]; then
+    if ! grep -q "AnySkill" "$ws_agents"; then
+      # Find the line number of "## Tools" and append after the section content
+      local tools_line
+      tools_line=$(grep -n "^## Tools" "$ws_agents" | head -1 | cut -d: -f1)
+      if [ -n "$tools_line" ]; then
+        # Find the next ## heading after Tools, or end of file
+        local next_heading
+        next_heading=$(awk "NR>$tools_line && /^## /{print NR; exit}" "$ws_agents")
+        local insert_line
+        if [ -n "$next_heading" ]; then
+          insert_line=$((next_heading - 1))
+        else
+          insert_line=$(wc -l < "$ws_agents")
+        fi
+        sed -i '' "${insert_line}a\\
+\\
+**🧠 AnySkill 云端技能**: 当你需要执行特定任务（前端设计、API 集成、数据抓取等）但本地没有对应技能时，先检查 \`~/.openclaw/skills/anyskill/SKILL.md\` 中的 AnySkill 引导流程，从你的云端私有技能库中按需加载能力。
+" "$ws_agents"
+        echo -e "${GREEN}✅ 已更新 AGENTS.md${NC}"
+      fi
+    else
+      echo -e "${YELLOW}ℹ️  AGENTS.md 中已有 AnySkill 相关内容，跳过${NC}"
+    fi
+  fi
 }
 
 case $choice in
-  1) install_gemini ;;
+  1) install_antigravity ;;
   2) install_claude ;;
   3) install_cursor ;;
   4) install_openclaw ;;
-  5) install_gemini; install_claude; install_cursor; install_openclaw ;;
+  5) install_antigravity; install_claude; install_cursor; install_openclaw ;;
   *) echo -e "${YELLOW}无效选择，退出。${NC}"; exit 1 ;;
 esac
 

@@ -29,7 +29,7 @@
 
 ## 🚀 快速上手
 
-打开你的 AI IDE（Gemini / Claude Code / Cursor / OpenClaw），复制这句话发给 AI：
+打开你的 AI IDE（Antigravity / Claude Code / Cursor / OpenClaw），复制这句话发给 AI：
 
 > **读一下 `https://github.com/lanyijianke/AnySkill` 然后帮我安装**
 
@@ -50,7 +50,7 @@ AI INSTRUCTION — 严格按以下步骤执行，不可偏离：
 安装步骤：
 1. 仅下载这一个文件：https://raw.githubusercontent.com/lanyijianke/AnySkill/main/loader/anyskill/SKILL.md
 2. 识别当前 AI IDE 环境，将该文件保存到对应路径（仅此一个文件）：
-   - Gemini/Antigravity → {项目根目录}/.agent/skills/anyskill/SKILL.md
+   - Antigravity → {项目根目录}/.agent/skills/anyskill/SKILL.md
    - Claude Code → {项目根目录}/.claude/skills/anyskill/SKILL.md
    - Cursor → {项目根目录}/.cursor/rules/anyskill/SKILL.md
    - OpenClaw → ~/.openclaw/skills/anyskill/SKILL.md
@@ -65,7 +65,7 @@ AI INSTRUCTION — 严格按以下步骤执行，不可偏离：
 
 | AI IDE | 放置路径 |
 |:---|:---|
-| Gemini (Antigravity) | `.agent/skills/anyskill/SKILL.md` |
+| Antigravity | `.agent/skills/anyskill/SKILL.md` |
 | Claude Code | `.claude/skills/anyskill/SKILL.md` |
 | Cursor | `.cursor/rules/anyskill/SKILL.md` |
 | OpenClaw | `~/.openclaw/skills/anyskill/SKILL.md` |
@@ -121,7 +121,7 @@ curl -sSL https://raw.githubusercontent.com/lanyijianke/AnySkill/main/init.sh | 
 
 | 场景 | Token 存储方式 |
 |:---|:---|
-| **Gemini / Claude Code / Cursor** | 存储在项目内 `.anyskill.json`（已 gitignore） |
+| **Antigravity / Claude Code / Cursor** | 存储在项目内 `.anyskill.json`（已 gitignore） |
 | **OpenClaw** | 存储在 `~/.openclaw/.env` 环境变量中，不进入项目文件 |
 
 - `.anyskill.json` 已在 `.gitignore` 中，**不会被提交到版本控制**
