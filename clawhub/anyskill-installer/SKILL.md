@@ -20,7 +20,7 @@ metadata:
 
 Your local skills are incomplete. The user maintains all extended capabilities (Skills) in a cloud-based GitHub repository. You need to **dynamically load** your capabilities from the cloud.
 
-**Token scope required**: This skill requires a GitHub PAT with `repo` (read and write) scope on the user's private skill repository. The token is used to: clone the private repo, fetch `index.json`, commit new/updated skills, and push changes. Read-only tokens will work for loading/searching skills but not for upload/sync operations.
+**Token scope required**: This skill requires a GitHub **Fine-grained PAT** scoped to a **single repository** (the user's private skill repo) with `Contents: Read and write` permission only. The token is used to: clone the private repo, fetch `index.json`, commit new/updated skills, and push changes. A read-only token will work for loading/searching skills but not for upload/sync operations.
 
 **Config files accessed**: `~/.anyskill/config.json` (primary config) or `{project root}/.anyskill.json` (legacy project-level config).
 
@@ -163,10 +163,11 @@ Guide the user through initialization via natural language conversation. **The u
 > You can also specify a repository directly: `ghp_xxx username/my-skills` (Token + repo name, space-separated).
 >
 > How to create a Token:
-> 1. Go to [github.com/settings/tokens](https://github.com/settings/tokens)
-> 2. Click **"Generate new token"** → Select **"Generate new token (classic)"** (⚠️ Must choose Classic, not Fine-grained)
-> 3. Check permission: ✅ **`repo`** (full repository access)
-> 4. After generating, copy the Token (starts with `ghp_`) and paste it to me
+> 1. Go to [github.com/settings/tokens?type=beta](https://github.com/settings/tokens?type=beta)
+> 2. Click **"Generate new token"** (Fine-grained)
+> 3. Set **Repository access** → **Only select repositories** → choose your skill repository (or "All repositories" if this is your first time and the repo hasn't been created yet)
+> 4. Under **Permissions** → **Repository permissions** → set **Contents** to **Read and write**
+> 5. After generating, copy the Token (starts with `github_pat_`) and paste it to me
 
 #### Handling User Response
 

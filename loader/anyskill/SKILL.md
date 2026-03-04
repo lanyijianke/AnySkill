@@ -146,10 +146,11 @@ Authorization: token {token}
 > 你也可以直接指定仓库：`ghp_xxx lanyijianke/my-skills`（Token + 仓库名，空格分隔）。
 >
 > Token 创建方法：
-> 1. 打开 [github.com/settings/tokens](https://github.com/settings/tokens)
-> 2. 点击 **"Generate new token"** → 选择 **"Generate new token (classic)"**（⚠️ 必须选 Classic，不要选 Fine-grained）
-> 3. 勾选权限：✅ **`repo`**（完整的仓库访问权限）
-> 4. 生成后复制 Token（以 `ghp_` 开头），粘贴给我即可
+> 1. 打开 [github.com/settings/tokens?type=beta](https://github.com/settings/tokens?type=beta)
+> 2. 点击 **"Generate new token"**（Fine-grained 细粒度令牌）
+> 3. **Repository access** → 选 **Only select repositories** → 选择你的技能仓库（如果是第一次用、仓库还没创建，可以先选 "All repositories"，之后再改）
+> 4. **Permissions** → **Repository permissions** → 将 **Contents** 设为 **Read and write**
+> 5. 生成后复制 Token（以 `github_pat_` 开头），粘贴给我即可
 
 #### 用户回复后的处理逻辑
 
