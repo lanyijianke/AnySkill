@@ -202,7 +202,9 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
   然后自动执行 clone 和配置写入（同路径 A 的步骤 1-4），**不再询问多余问题**。
 
 - **❌ 未探测到任何技能库**（确认为纯新用户）：
-  1. 告知用户未找到已有仓库，询问希望的仓库名称（默认建议 `my-anyskill`）。
+  1. 根据当前 IDE 环境选择默认仓库名，并询问用户是否需要自定义：
+     - **OpenClaw** → 默认建议 `my-skills-claw`（个人助手技能库）
+     - **Antigravity / Claude Code / Cursor** → 默认建议 `my-skills-dev`（开发技能库）
   2. 调用 GitHub Template API 创建私有仓库：
   ```bash
   curl -X POST https://api.github.com/repos/lanyijianke/AnySkill/generate \
