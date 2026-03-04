@@ -3,6 +3,7 @@
     "description": "思维框架、代码审查、提示词工程等增强 AI 本身能力的元技能",
     "skills": [
         "self-improving-agent",
-        "smithery-ai-cli"
+        "smithery-ai-cli",
+        "skill-writer"
     ]
 }
