@@ -132,7 +132,8 @@ AnySkill/
 ├── bundles/                      # 技能组合包
 │   ├── content-creation.json     # 内容创作套装
 │   ├── data-crawling.json        # 数据采集套装
-│   └── tech-development.json     # 技术开发套装
+│   ├── tech-development.json     # 技术开发套装
+│   └── communication.json        # 通信集成套装
 ├── skills/                       # 你的技能文件夹放这里
 │   └── hello-world/              # 示例技能，可删除
 │       └── SKILL.md
