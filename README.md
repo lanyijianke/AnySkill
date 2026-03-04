@@ -129,15 +129,20 @@ AnySkill/
 │   └── build-index.yml           # GitHub Actions: push 后自动重建 index.json
 ├── loader/anyskill/
 │   └── SKILL.md                  # 引擎文件（安装到你的项目中）
-├── bundles/                      # 技能组合包
+├── bundles/                      # 技能组合包配置
+│   ├── core-enhancement.json     # 核心增强套装
+│   ├── tech-development.json     # 技术开发套装
 │   ├── content-creation.json     # 内容创作套装
 │   ├── data-crawling.json        # 数据采集套装
-│   ├── tech-development.json     # 技术开发套装
-│   ├── communication.json        # 通信集成套装
-│   └── core-enhancement.json     # 核心增强套装（元技能）
-├── skills/                       # 你的技能文件夹放这里
-│   └── hello-world/              # 示例技能，可删除
-│       └── SKILL.md
+│   └── communication.json        # 通信集成套装
+├── skills/
+│   ├── presets/                  # 预制技能（按组合包分类）
+│   │   ├── core-enhancement/
+│   │   ├── tech-development/
+│   │   ├── content-creation/
+│   │   ├── data-crawling/
+│   │   └── communication/
+│   └── custom/                   # 用户自定义技能
 ├── generate-index.js             # 索引生成脚本（零依赖 Node.js）
 ├── init.sh                       # 命令行安装脚本（可选）
 ├── index.json                    # 自动生成，勿手动编辑
@@ -150,10 +155,10 @@ AnySkill/
 
 ```bash
 # 在你的私有仓库中
-mkdir -p skills/我的技能
+mkdir -p skills/custom/我的技能
 ```
 
-在 `skills/我的技能/SKILL.md` 中写入：
+在 `skills/custom/我的技能/SKILL.md` 中写入：
 
 ```markdown
 ---

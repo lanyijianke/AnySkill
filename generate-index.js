@@ -3,11 +3,11 @@
 /**
  * generate-index.js
  * 
- * Scans the skills/ directory for skill folders and produces index.json.
+ * Scans skills/ directory recursively for skill folders and produces index.json.
  * 
  * Expected structure:
- *   skills/my-skill/SKILL.md  (entry point, required)
- *   skills/my-skill/scripts/  (optional sub-files)
+ *   skills/presets/{category}/{skill-name}/SKILL.md
+ *   skills/custom/{skill-name}/SKILL.md
  * 
  * Each SKILL.md must have YAML frontmatter with at least a 'name' field.
  * 
@@ -45,7 +45,7 @@ function extractFrontmatter(content) {
 
 /**
  * Recursively collect all file paths within a directory.
- * Returns paths relative to SKILLS_DIR.
+ * Returns paths relative to the given baseDir.
  */
 function collectFiles(dir, baseDir) {
   const results = [];
@@ -53,10 +53,39 @@ function collectFiles(dir, baseDir) {
 
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
+    if (entry.name === '.gitkeep') continue;
     if (entry.isDirectory()) {
       results.push(...collectFiles(fullPath, baseDir));
     } else if (entry.isFile()) {
       results.push(path.relative(baseDir, fullPath));
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Recursively find all skill folders (folders containing SKILL.md) under a root dir.
+ * Returns an array of { skillDir, relativePath } entries.
+ */
+function findSkillFolders(dir) {
+  const results = [];
+  if (!fs.existsSync(dir)) return results;
+
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
+
+    const fullPath = path.join(dir, entry.name);
+    const skillMd = path.join(fullPath, 'SKILL.md');
+
+    if (fs.existsSync(skillMd)) {
+      // This is a skill folder
+      results.push(fullPath);
+    } else {
+      // Recurse deeper (e.g., into presets/core-enhancement/)
+      results.push(...findSkillFolders(fullPath));
     }
   }
 
@@ -69,43 +98,36 @@ function main() {
     process.exit(1);
   }
 
-  const entries = fs.readdirSync(SKILLS_DIR, { withFileTypes: true });
+  const skillFolders = findSkillFolders(SKILLS_DIR);
   const index = [];
 
-  for (const entry of entries) {
-    // Only support folder mode: skills/{name}/SKILL.md
-    if (!entry.isDirectory()) {
-      console.warn(`⚠️  Skipping ${entry.name}: not a folder (flat .md files are no longer supported)`);
-      continue;
-    }
-
-    const skillMd = path.join(SKILLS_DIR, entry.name, 'SKILL.md');
-    if (!fs.existsSync(skillMd)) {
-      console.warn(`⚠️  Skipping folder ${entry.name}/: no SKILL.md found`);
-      continue;
-    }
-
+  for (const skillDir of skillFolders) {
+    const skillMd = path.join(skillDir, 'SKILL.md');
     const content = fs.readFileSync(skillMd, 'utf-8');
     const frontmatter = extractFrontmatter(content);
+    const skillName = path.basename(skillDir);
+    const relativePath = path.relative(SKILLS_DIR, skillDir);
+    const category = path.relative(SKILLS_DIR, path.dirname(skillDir));
 
     if (!frontmatter || !frontmatter.name) {
-      console.warn(`⚠️  Skipping ${entry.name}/SKILL.md: missing or invalid frontmatter (need at least 'name')`);
+      console.warn(`⚠️  Skipping ${relativePath}/SKILL.md: missing or invalid frontmatter (need at least 'name')`);
       continue;
     }
 
     // Recursively collect all files in this skill folder
-    const allFiles = collectFiles(path.join(SKILLS_DIR, entry.name), SKILLS_DIR);
-    // Sort for deterministic output
+    const allFiles = collectFiles(skillDir, SKILLS_DIR);
     allFiles.sort();
 
     index.push({
       name: frontmatter.name,
       description: frontmatter.description || '',
-      file: `${entry.name}/SKILL.md`,
+      path: relativePath,
+      category: category,
+      file: `${relativePath}/SKILL.md`,
       files: allFiles,
     });
 
-    console.log(`✅ ${frontmatter.name} (${entry.name}/) — ${allFiles.length} file(s)`);
+    console.log(`✅ ${frontmatter.name} (${relativePath}/) — ${allFiles.length} file(s)`);
   }
 
   // Sort alphabetically by name

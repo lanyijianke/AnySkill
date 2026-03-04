@@ -2,50 +2,50 @@
   {
     "name": "frontend-design",
     "description": "创建独特、生产级且具有高设计质量的前端界面。当用户要求构建 Web 组件、页面或应用程序时使用。致力于生成富有创意的代码，避免通用的 AI 审美。",
-    "file": "frontend-design/SKILL.md",
+    "path": "presets/tech-development/frontend-design",
+    "category": "presets/tech-development",
+    "file": "presets/tech-development/frontend-design/SKILL.md",
     "files": [
-      "frontend-design/SKILL.md"
-    ]
-  },
-  {
-    "name": "hello-world",
-    "description": "这是一个示例 Skill 文件。你可以删除它，然后在这里放入你自己的技能。",
-    "file": "hello-world/SKILL.md",
-    "files": [
-      "hello-world/SKILL.md"
+      "presets/tech-development/frontend-design/SKILL.md"
     ]
   },
   {
     "name": "self-improvement",
     "description": "Captures learnings, errors, and corrections to enable continuous improvement. Use when: (1) A command or operation fails unexpectedly, (2) User corrects Claude ('No, that's wrong...', 'Actually...'), (3) User requests a capability that doesn't exist, (4) An external API or tool fails, (5) Claude realizes its knowledge is outdated or incorrect, (6) A better approach is discovered for a recurring task. Also review learnings before major tasks.",
-    "file": "self-improving-agent/SKILL.md",
+    "path": "presets/core-enhancement/self-improving-agent",
+    "category": "presets/core-enhancement",
+    "file": "presets/core-enhancement/self-improving-agent/SKILL.md",
     "files": [
-      "self-improving-agent/SKILL.md",
-      "self-improving-agent/hooks/openclaw/HOOK.md",
-      "self-improving-agent/hooks/openclaw/handler.js",
-      "self-improving-agent/hooks/openclaw/handler.ts",
-      "self-improving-agent/references/examples.md",
-      "self-improving-agent/references/hooks-setup.md",
-      "self-improving-agent/references/openclaw-integration.md",
-      "self-improving-agent/scripts/activator.sh",
-      "self-improving-agent/scripts/error-detector.sh",
-      "self-improving-agent/scripts/extract-skill.sh"
+      "presets/core-enhancement/self-improving-agent/SKILL.md",
+      "presets/core-enhancement/self-improving-agent/hooks/openclaw/HOOK.md",
+      "presets/core-enhancement/self-improving-agent/hooks/openclaw/handler.js",
+      "presets/core-enhancement/self-improving-agent/hooks/openclaw/handler.ts",
+      "presets/core-enhancement/self-improving-agent/references/examples.md",
+      "presets/core-enhancement/self-improving-agent/references/hooks-setup.md",
+      "presets/core-enhancement/self-improving-agent/references/openclaw-integration.md",
+      "presets/core-enhancement/self-improving-agent/scripts/activator.sh",
+      "presets/core-enhancement/self-improving-agent/scripts/error-detector.sh",
+      "presets/core-enhancement/self-improving-agent/scripts/extract-skill.sh"
     ]
   },
   {
     "name": "skill-writer",
     "description": "指导用户为 Claude Code 创建 Agent Skills。当用户想要创建、编写、创作或设计新的 Skill，或者在 SKILL.md 文件、Frontmatter 或 Skill 结构方面需要帮助时使用。",
-    "file": "skill-writer/SKILL.md",
+    "path": "presets/core-enhancement/skill-writer",
+    "category": "presets/core-enhancement",
+    "file": "presets/core-enhancement/skill-writer/SKILL.md",
     "files": [
-      "skill-writer/SKILL.md"
+      "presets/core-enhancement/skill-writer/SKILL.md"
     ]
   },
   {
     "name": "smithery-ai-cli",
     "description": "Find, connect, and use MCP tools and skills via the Smithery CLI.",
-    "file": "smithery-ai-cli/SKILL.md",
+    "path": "presets/core-enhancement/smithery-ai-cli",
+    "category": "presets/core-enhancement",
+    "file": "presets/core-enhancement/smithery-ai-cli/SKILL.md",
     "files": [
-      "smithery-ai-cli/SKILL.md"
+      "presets/core-enhancement/smithery-ai-cli/SKILL.md"
     ]
   }
 ]
