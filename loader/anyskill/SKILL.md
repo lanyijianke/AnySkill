@@ -44,14 +44,19 @@ Authorization: token {token}
 
 #### 路径 A：用户已有仓库
 
-用户提供仓库地址后：
-1. 询问仓库是公开还是私有（私有需提供 token）。
-2. 在项目根目录创建 `.anyskill.json`：
+用户提供仓库地址和 Token 后：
+1. 询问用户希望将仓库 clone 到本地的哪个位置（默认建议 `/tmp/{仓库名}`）。
+2. 执行 clone：
+```bash
+git clone https://{token}@github.com/{repo}.git {localPath}
+```
+3. 在项目根目录创建 `.anyskill.json`：
 ```json
 {
   "repo": "用户提供的地址",
   "branch": "main",
-  "token": "ghp_xxxxxxxxxxxx"
+  "token": "ghp_xxxxxxxxxxxx",
+  "localPath": "/tmp/{仓库名}"
 }
 ```
 
@@ -66,12 +71,17 @@ curl -X POST https://api.github.com/repos/lanyijianke/AnySkill/generate \
   -H "Accept: application/vnd.github+json" \
   -d '{"owner":"{用户名}","name":"{仓库名}","private":true,"description":"My AnySkill private skill repository"}'
 ```
-3. 创建成功后，自动拼接仓库地址并写入 `.anyskill.json`：
+3. 等待几秒让 GitHub 完成仓库初始化，然后 clone 到本地：
+```bash
+git clone https://{token}@github.com/{用户名}/{仓库名}.git /tmp/{仓库名}
+```
+4. 在项目根目录创建 `.anyskill.json`：
 ```json
 {
   "repo": "{用户名}/{仓库名}",
   "branch": "main",
-  "token": "ghp_xxxxxxxxxxxx"
+  "token": "ghp_xxxxxxxxxxxx",
+  "localPath": "/tmp/{仓库名}"
 }
 ```
 
@@ -79,8 +89,9 @@ curl -X POST https://api.github.com/repos/lanyijianke/AnySkill/generate \
 
 无论走哪条路径，完成后告知用户：
 > ✅ AnySkill 配置完成！
-> 📦 你的技能仓库：`{repo}`
-> 从现在起，我可以从你的云端仓库动态加载所有技能了。
+> 📦 技能仓库：`{repo}`
+> 📂 本地路径：`{localPath}`
+> 从现在起，你可以加载、下载、发布技能了。
 > ⚠️ `.anyskill.json` 已被加入 `.gitignore`，不会被提交到版本控制中。
 
 然后继续执行用户的原始请求。
@@ -149,31 +160,7 @@ curl -X POST https://api.github.com/repos/lanyijianke/AnySkill/generate \
 
 当用户明确说 **"发布技能"、"上传这个 skill"、"把技能推到云端"、"发布到仓库"** 等类似指令时，执行发布流程。
 
-### 前置条件
-
-检查 `.anyskill.json` 中是否存在 `localPath` 字段（指向技能仓库的本地 clone 路径）。
-
-- **如果 `localPath` 不存在**，对话引导用户：
-  > 📦 要发布技能，我需要知道你的 AnySkill 仓库 clone 在本地的哪个位置。
-  > 请告诉我路径（例如：`/Users/你/projects/AnySkill`），或者我可以帮你 clone。
-
-  用户提供路径后，自动将 `localPath` 写入 `.anyskill.json`：
-  ```json
-  {
-    "repo": "user/repo",
-    "branch": "main",
-    "localPath": "/path/to/local/clone"
-  }
-  ```
-
-- **如果用户要求 clone**，执行：
-  ```bash
-  git clone https://github.com/{repo}.git {用户指定的路径}
-  ```
-  如果是私有仓库且有 token：
-  ```bash
-  git clone https://{token}@github.com/{repo}.git {用户指定的路径}
-  ```
+读取 `.anyskill.json` 中的 `localPath`，在本地仓库中操作。
 
 ### 发布步骤
 
