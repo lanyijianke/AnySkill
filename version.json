@@ -1,7 +1,7 @@
 {
     "engine": {
-        "version": "1.1.0",
-        "changelog": "新增 OpenClaw workspace 集成，Gemini 更名为 Antigravity"
+        "version": "2.0.0",
+        "changelog": "IDE 智能分仓、版本自动检查、OpenClaw workspace 集成、模板清理"
     },
     "infra": {
         "version": "1.0.0",
