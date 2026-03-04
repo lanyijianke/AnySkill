@@ -225,6 +225,26 @@ git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
 
 ---
 
+## 模式六：删除指定技能
+
+当用户明确说 **"删除 XX 技能"、"移除 XX skill"、"把 XX 从仓库删掉"** 等类似指令时：
+
+1. 读取 `.anyskill.json` 中的 `localPath`。
+2. 确认 `{localPath}/skills/{用户指定的名称}/` 是否存在。
+3. **必须向用户确认**：
+   > ⚠️ 即将删除技能 `{名称}`，此操作会从云端仓库中永久移除该文件夹。确认删除吗？
+4. 用户确认后，执行：
+   ```bash
+   cd {localPath}
+   git rm -rf skills/{名称}/
+   git commit -m "feat: remove skill {名称}"
+   git push origin {branch}
+   ```
+5. 完成后告知用户：
+   > ✅ 技能 `{名称}` 已从云端仓库删除。GitHub Actions 将自动更新索引。
+
+---
+
 ## 行为准则
 
 * 永远不要猜测细节，必须依赖云端获取"注入能力"。

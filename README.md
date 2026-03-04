@@ -71,7 +71,7 @@ curl -sSL https://raw.githubusercontent.com/lanyijianke/AnySkill/main/init.sh | 
 
 ---
 
-## 🎯 五种操作模式
+## 🎯 六种操作模式
 
 所有操作均通过自然语言触发，无需记忆任何命令。
 
@@ -82,6 +82,7 @@ curl -sSL https://raw.githubusercontent.com/lanyijianke/AnySkill/main/init.sh | 
 | **全量下载** | "下载所有技能" / "同步云端技能" | 批量拉取全部技能到本地 |
 | **上传技能** | "上传技能" / "把技能推到云端" | 在本地仓库创建技能文件夹并 push |
 | **列出技能** | "列出技能" / "有哪些技能" | 展示云端所有可用技能列表 |
+| **删除技能** | "删除 XX 技能" / "移除 XX" | 从云端仓库删除指定技能文件夹 |
 
 ---
 
