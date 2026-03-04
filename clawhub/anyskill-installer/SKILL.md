@@ -9,7 +9,6 @@ metadata:
         - ANYSKILL_GITHUB_TOKEN
       config:
         - ~/.anyskill/config.json
-        - ~/.openclaw/.env
       bins:
         - git
     primaryEnv: ANYSKILL_GITHUB_TOKEN
@@ -23,7 +22,7 @@ Your local skills are incomplete. The user maintains all extended capabilities (
 
 **Token scope required**: This skill requires a GitHub PAT with `repo` (read and write) scope on the user's private skill repository. The token is used to: clone the private repo, fetch `index.json`, commit new/updated skills, and push changes. Read-only tokens will work for loading/searching skills but not for upload/sync operations.
 
-**Config files accessed**: `~/.anyskill/config.json` (primary config), `~/.openclaw/.env` (OpenClaw token store, read-only — only checked if the primary config has no token).
+**Config files accessed**: `~/.anyskill/config.json` (primary config) or `{project root}/.anyskill.json` (legacy project-level config).
 
 ---
 
@@ -40,8 +39,8 @@ Your local skills are incomplete. The user maintains all extended capabilities (
 ### Token Retrieval Priority (for private repo authentication)
 
 Regardless of which level the config is read from, the token retrieval priority is always:
-1. First check environment variable `ANYSKILL_GITHUB_TOKEN` (OpenClaw scenario)
-2. Then check the `token` field in the config file (other IDE scenarios)
+1. Check environment variable `ANYSKILL_GITHUB_TOKEN`
+2. Check the `token` field in the config file
 
 If a token is obtained, include it in all HTTP requests as a header:
 ```
@@ -57,8 +56,9 @@ The user has previously initialized on this machine. **Skip all initialization**
    - **Files base URL**: `https://raw.githubusercontent.com/{repo}/{branch}/skills/`
 3. Verify that the `localPath` directory exists. If not, automatically re-clone:
    ```bash
-   git clone https://{token}@github.com/{repo}.git {localPath}
+   git clone https://github.com/{repo}.git {localPath}
    ```
+   (The token is passed via the `Authorization` header or `GIT_ASKPASS` environment, not embedded in the URL.)
 4. Attempt to fetch `index.json` to confirm connectivity.
 5. Inform the user:
    > ✅ AnySkill configuration detected, connected to repository `{repo}`. Ready to use!
@@ -144,7 +144,7 @@ If verification fails (network error or repo deleted), ask the user if they want
 
 **Before asking the user any questions, first silently detect if a usable Token already exists:**
 1. Check if environment variable `ANYSKILL_GITHUB_TOKEN` exists.
-2. If it **exists** (meaning the user has previously used AnySkill on this machine, and the Token is persisted in `~/.openclaw/.env` etc.):
+2. If it **exists** (meaning the user has previously configured AnySkill on this machine):
    - **Do not ask the user for a Token**, directly jump to "Path B: User only provided a Token" auto-discovery flow below.
    - The entire process should be silent to the user: AI auto-detects cloud repo → confirms mount → writes global config → ready.
 3. If it **does not exist**, then initiate the guided conversation (see below).
@@ -182,12 +182,13 @@ Guide the user through initialization via natural language conversation. **The u
 After the user provides a repo address and Token:
 1. Ask the user where they want to clone the repo locally (default suggestion: `/tmp/{repo-name}`).
 2. **Securely store the Token** (depends on IDE environment):
-   - **OpenClaw**: Write the Token to `~/.openclaw/.env` file (append line `ANYSKILL_GITHUB_TOKEN=ghp_xxx`), **do not** write token to the config file.
+   - **OpenClaw**: Set environment variable `ANYSKILL_GITHUB_TOKEN` via the platform's standard env configuration.
    - **Other IDEs (Antigravity/Claude Code/Cursor)**: Write token to the config file.
 3. Execute clone:
 ```bash
-git clone https://{token}@github.com/{repo}.git {localPath}
+git clone https://github.com/{repo}.git {localPath}
 ```
+(Use `GIT_ASKPASS` or credential helper to authenticate, do not embed token in URL.)
 4. Create **global config file** `~/.anyskill/config.json`:
 
 **OpenClaw version** (without token):
@@ -255,7 +256,8 @@ If `index.json` can be read successfully, this repo is a genuine AnySkill skill 
   ```
    3. Wait a few seconds for GitHub to finish repo initialization, then clone locally:
    ```bash
-   git clone https://{token}@github.com/{login}/{repo-name}.git /tmp/{repo-name}
+   git clone https://github.com/{login}/{repo-name}.git /tmp/{repo-name}
+   # Authenticate via GIT_ASKPASS or credential helper, not via URL
    ```
    4. **Clean up template residual files** (these files are only useful in the upstream template repo, not needed in the user's private repo):
    ```bash
