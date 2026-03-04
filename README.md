@@ -58,9 +58,9 @@ Push 后 GitHub Actions 自动更新 `index.json`。
 
 打开你的 AI IDE，直接说：
 
-> "帮我安装 AnySkill，从 https://raw.githubusercontent.com/lanyijianke/AnySkill/main/loader/anyskill/SKILL.md 下载破冰者到本项目"
+> "帮我安装 AnySkill，仓库地址：`lanyijianke/AnySkill`"
 
-AI 会自动判断 IDE 类型、创建目录、下载文件。你什么都不用做。
+AI 会自动拼接下载地址 `https://raw.githubusercontent.com/{repo}/main/loader/anyskill/SKILL.md`，判断 IDE 类型、创建目录、下载文件。你什么都不用做。
 
 **方式 B：手动复制**
 
