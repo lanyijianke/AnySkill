@@ -1,5 +1,6 @@
 ---
 name: anyskill-loader
+version: 1.1.0
 description: 作为所有工作流的"破冰"入口。当用户要求你做特定任务（如前端设计、API 集成、文本处理、调用外部 MCP）而你本地没有这些技能时，必须优先查阅并加载云端 AnySkill 技能系统。也支持将云端全部技能批量下载到当前项目，或将本地技能发布到云端仓库。
 ---
 
@@ -46,6 +47,57 @@ Authorization: token {token}
    > ✅ 已检测到 AnySkill 配置，连接到仓库 `{repo}`。随时可以使用！
 
 如果验证失败（网络异常或仓库已删除），提示用户是否需要重新初始化。
+
+### 版本自动检查（每次初始化时执行）
+
+**在配置验证通过后（无论是情况一还是初始化完成后），执行一次静默版本检查：**
+
+1. 拉取上游版本信息：
+   ```
+   https://raw.githubusercontent.com/lanyijianke/AnySkill/main/version.json
+   ```
+   该文件结构为：
+   ```json
+   {
+     "engine": { "version": "x.y.z", "changelog": "..." },
+     "infra": { "version": "x.y.z", "files": ["generate-index.js", ".github/workflows/build-index.yml"], "changelog": "..." }
+   }
+   ```
+
+2. **引擎版本检查**：
+   - 读取本文件（SKILL.md）frontmatter 中的 `version` 字段（当前为 `1.1.0`）。
+   - 与远程 `engine.version` 对比。
+   - 如果远程版本**更高**，提示用户：
+     > 🔔 AnySkill 引擎有新版本 v{remote}（当前 v{local}）
+     > 📋 更新内容：{engine.changelog}
+     > 要更新吗？
+   - 用户确认后，重新下载 `https://raw.githubusercontent.com/lanyijianke/AnySkill/main/loader/anyskill/SKILL.md` 并**覆盖**当前本地的 SKILL.md 文件。
+
+3. **基础设施版本检查**：
+   - 读取用户私有仓库 `{localPath}` 下的 `.anyskill-infra-version` 文件。如果不存在，视为 `0.0.0`。
+   - 与远程 `infra.version` 对比。
+   - 如果远程版本**更高**，提示用户：
+     > 🔔 仓库基础设施有更新 v{remote}（当前 v{local}）
+     > 📋 更新内容：{infra.changelog}
+     > 要更新吗？
+   - 用户确认后，遍历 `infra.files` 数组，逐一从上游下载并覆盖到用户的 `{localPath}` 中：
+     ```
+     https://raw.githubusercontent.com/lanyijianke/AnySkill/main/{file}
+     ```
+   - 写入版本标记文件 `{localPath}/.anyskill-infra-version`，内容为新版本号。
+   - 执行 git 操作提交变更：
+     ```bash
+     cd {localPath}
+     git add -A
+     git commit -m "chore: update AnySkill infra to v{version}"
+     git push origin {branch}
+     ```
+
+4. 如果两个版本都是最新的，**不输出任何内容**，静默通过。
+
+5. 如果 `version.json` 拉取失败（网络异常），**静默跳过**版本检查，不影响正常使用。
+
+> 💡 版本检查是轻量级操作（仅拉取一个小 JSON），不会影响正常工作流的速度。
 
 ### 情况二：配置不存在（新设备 / 首次使用）
 
