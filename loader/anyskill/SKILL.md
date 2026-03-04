@@ -282,7 +282,7 @@ git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
 
 ## 模式九：从 Packs 安装技能
 
-当用户明确说 **"从 Packs 安装"、"看看商店有什么"、"安装 XX 组合包"、"有哪些组合包"** 等类似指令时：
+当用户明确说 **"从 Packs 安装"、"有哪些组合包"、"安装 XX 组合包"、"浏览组合包"** 等类似指令时：
 
 **Packs 仓库地址**：`https://raw.githubusercontent.com/lanyijianke/AnySkill-Packs/main/`
 
