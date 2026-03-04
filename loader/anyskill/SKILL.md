@@ -280,6 +280,41 @@ git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
 
 ---
 
+## 模式九：从 Packs 安装技能
+
+当用户明确说 **"从 Packs 安装"、"看看商店有什么"、"安装 XX 组合包"、"有哪些组合包"** 等类似指令时：
+
+**Packs 仓库地址**：`https://raw.githubusercontent.com/lanyijianke/AnySkill-Packs/main/`
+
+### 浏览可用组合包
+
+1. 拉取 `https://raw.githubusercontent.com/lanyijianke/AnySkill-Packs/main/index.json`（公开仓库，无需 Token）。
+2. 以表格形式展示所有组合包及其技能：
+
+| 组合包 | 技能名 | 描述 |
+|:---|:---|:---|
+| `{category}` | `{skill.name}` | `{skill.description}` |
+
+### 安装指定组合包
+
+1. 从 `index.json` 中找到目标组合包的所有技能。
+2. **逐个下载**每个技能的文件，保存到用户私有仓库的 `{localPath}/skills/{skill-name}/` 下。
+   - 文件 URL 模式：`https://raw.githubusercontent.com/lanyijianke/AnySkill-Packs/main/packs/{file-path}`
+3. **容错机制**：某个技能下载失败时跳过，继续下一个。
+4. 下载完成后执行 git 操作将技能提交到用户的私有仓库：
+   ```bash
+   cd {localPath}
+   git add skills/
+   git commit -m "feat: install pack {category}"
+   git push origin {branch}
+   ```
+5. 给出**汇总报告**：
+   > ✅ 组合包 `{category}` 安装完毕！
+   > - 成功：{N} 个（skill-a, skill-b）
+   > - 失败：{M} 个（skill-x — 原因：下载失败）
+
+---
+
 ## 行为准则
 
 * 永远不要猜测细节，必须依赖云端获取"注入能力"。
