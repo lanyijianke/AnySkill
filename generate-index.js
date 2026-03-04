@@ -3,11 +3,11 @@
 /**
  * generate-index.js
  * 
- * Scans skills/ directory recursively for skill folders and produces index.json.
+ * Scans the skills/ directory for skill folders and produces index.json.
  * 
  * Expected structure:
- *   skills/presets/{category}/{skill-name}/SKILL.md
- *   skills/custom/{skill-name}/SKILL.md
+ *   skills/my-skill/SKILL.md  (entry point, required)
+ *   skills/my-skill/scripts/  (optional sub-files)
  * 
  * Each SKILL.md must have YAML frontmatter with at least a 'name' field.
  * 
@@ -45,7 +45,7 @@ function extractFrontmatter(content) {
 
 /**
  * Recursively collect all file paths within a directory.
- * Returns paths relative to the given baseDir.
+ * Returns paths relative to SKILLS_DIR.
  */
 function collectFiles(dir, baseDir) {
   const results = [];
@@ -64,73 +64,42 @@ function collectFiles(dir, baseDir) {
   return results;
 }
 
-/**
- * Recursively find all skill folders (folders containing SKILL.md) under a root dir.
- * Returns an array of { skillDir, relativePath } entries.
- */
-function findSkillFolders(dir) {
-  const results = [];
-  if (!fs.existsSync(dir)) return results;
-
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-
-  for (const entry of entries) {
-    if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
-
-    const fullPath = path.join(dir, entry.name);
-    const skillMd = path.join(fullPath, 'SKILL.md');
-
-    if (fs.existsSync(skillMd)) {
-      // This is a skill folder
-      results.push(fullPath);
-    } else {
-      // Recurse deeper (e.g., into presets/core-enhancement/)
-      results.push(...findSkillFolders(fullPath));
-    }
-  }
-
-  return results;
-}
-
 function main() {
   if (!fs.existsSync(SKILLS_DIR)) {
     console.error(`Skills directory not found: ${SKILLS_DIR}`);
     process.exit(1);
   }
 
-  const skillFolders = findSkillFolders(SKILLS_DIR);
+  const entries = fs.readdirSync(SKILLS_DIR, { withFileTypes: true });
   const index = [];
 
-  for (const skillDir of skillFolders) {
-    const skillMd = path.join(skillDir, 'SKILL.md');
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+
+    const skillMd = path.join(SKILLS_DIR, entry.name, 'SKILL.md');
+    if (!fs.existsSync(skillMd)) continue;
+
     const content = fs.readFileSync(skillMd, 'utf-8');
     const frontmatter = extractFrontmatter(content);
-    const skillName = path.basename(skillDir);
-    const relativePath = path.relative(SKILLS_DIR, skillDir);
-    const category = path.relative(SKILLS_DIR, path.dirname(skillDir));
 
     if (!frontmatter || !frontmatter.name) {
-      console.warn(`⚠️  Skipping ${relativePath}/SKILL.md: missing or invalid frontmatter (need at least 'name')`);
+      console.warn(`⚠️  Skipping ${entry.name}/SKILL.md: missing or invalid frontmatter`);
       continue;
     }
 
-    // Recursively collect all files in this skill folder
-    const allFiles = collectFiles(skillDir, SKILLS_DIR);
+    const allFiles = collectFiles(path.join(SKILLS_DIR, entry.name), SKILLS_DIR);
     allFiles.sort();
 
     index.push({
       name: frontmatter.name,
       description: frontmatter.description || '',
-      path: relativePath,
-      category: category,
-      file: `${relativePath}/SKILL.md`,
+      file: `${entry.name}/SKILL.md`,
       files: allFiles,
     });
 
-    console.log(`✅ ${frontmatter.name} (${relativePath}/) — ${allFiles.length} file(s)`);
+    console.log(`✅ ${frontmatter.name} (${entry.name}/) — ${allFiles.length} file(s)`);
   }
 
-  // Sort alphabetically by name
   index.sort((a, b) => a.name.localeCompare(b.name));
 
   fs.writeFileSync(INDEX_FILE, JSON.stringify(index, null, 2) + '\n', 'utf-8');
