@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/lanyijianke/AnySkill/master/loader/anyskill/icon.png" width="128" height="128" alt="AnySkill" />
+  <img src="https://raw.githubusercontent.com/lanyijianke/AnySkill/master/assets/icon.png" width="128" height="128" alt="AnySkill" />
 </p>
 
 <h1 align="center">AnySkill</h1>
