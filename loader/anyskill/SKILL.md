@@ -143,17 +143,42 @@ Authorization: token {token}
 >
 > 请问你**是否已有**一个 AnySkill 技能仓库？
 >
+> ---
+>
 > **A) 已有仓库** — 只需提供 Token 和仓库名：
 > `github_pat_xxx username/my-skills`（空格分隔）
 >
-> **B) 还没有仓库** — 2 步搞定（手机/电脑都行）：
-> 1️⃣ 打开链接创建私有仓库 👉 [一键创建](https://github.com/lanyijianke/AnySkill/generate)
->    仓库名建议 `my-skills`，**务必勾选 Private**
-> 2️⃣ 创建 Token 👉 [创建 Fine-grained Token](https://github.com/settings/tokens?type=beta)
->    → **Repository access** → **Only select repositories** → 选你刚创建的仓库
->    → **Permissions** → **Contents** → **Read and write**
+> ---
 >
-> 准备好了就把 Token（和仓库名）发过来吧！
+> **B) 还没有仓库** — 按以下步骤操作（手机/电脑都行）：
+>
+> **第 1 步：创建私有技能仓库**
+> 打开 👉 [一键创建仓库](https://github.com/lanyijianke/AnySkill/generate)
+> - **Repository name** 填 `my-skills`（或你喜欢的名字）
+> - ⚠️ **务必选 Private**（不要选 Public）
+> - 点 **Create repository**
+>
+> **第 2 步：创建 Token（给 AI 访问仓库的钥匙）**
+> 打开 👉 [创建 Token](https://github.com/settings/personal-access-tokens/new)
+> - **Token name** 填 `AnySkill`
+> - **Expiration** 选一个你觉得合适的时间
+> - **Repository access** 选 **"Only select repositories"**
+>   → 在下拉框中搜索并选中你刚创建的 `my-skills` 仓库
+>   ⚠️ 注意：如果选的是"Public Repositories"，下面不会出现权限面板！
+> - 选完仓库后，下方会出现 **Permissions** 面板
+>   → 展开 **"Repository permissions"**
+>   → 往下找到 **"Contents"**（在列表中间偏上的位置）
+>   → 把它从 "No access" 改成 **"Read and write"**
+> - 其他权限保持 No access 不动
+> - 点最下方的 **"Generate token"**
+> - 复制生成的 Token（以 `github_pat_` 开头）
+>
+> **第 3 步：把 Token 和仓库名发给我**
+> 格式：`github_pat_xxx 你的用户名/my-skills`
+>
+> ---
+>
+> 准备好了就发过来吧！如果哪一步不确定，随时问我。
 
 #### 用户回复后的处理逻辑
 

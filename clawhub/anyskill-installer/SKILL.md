@@ -156,21 +156,46 @@ Guide the user through initialization via natural language conversation. **The u
 
 **Say something like this to the user:**
 
-> 👋 Welcome to AnySkill! Let me help you connect your private skill repository.
+>  👋 Welcome to AnySkill! Let me help you connect your private skill repository.
 >
 > Do you **already have** an AnySkill skill repository?
+>
+> ---
 >
 > **A) I have a repo** — Just provide your Token and repo name:
 > `github_pat_xxx username/my-skills` (space-separated)
 >
-> **B) I don't have one yet** — 2 easy steps (works on mobile too):
-> 1️⃣ Create a private repo 👉 [One-click create](https://github.com/lanyijianke/AnySkill/generate)
->    Suggested name: `my-skills`, **make sure to check Private**
-> 2️⃣ Create a Token 👉 [Create Fine-grained Token](https://github.com/settings/tokens?type=beta)
->    → **Repository access** → **Only select repositories** → pick the repo you just created
->    → **Permissions** → **Contents** → **Read and write**
+> ---
 >
-> Send me your Token (and repo name) when you're ready!
+> **B) I don't have one yet** — Follow these steps (works on mobile too):
+>
+> **Step 1: Create a private skill repository**
+> Open 👉 [One-click create repo](https://github.com/lanyijianke/AnySkill/generate)
+> - **Repository name**: enter `my-skills` (or any name you like)
+> - ⚠️ **Must select Private** (do not choose Public)
+> - Click **Create repository**
+>
+> **Step 2: Create a Token (a key for AI to access your repo)**
+> Open 👉 [Create Token](https://github.com/settings/personal-access-tokens/new)
+> - **Token name**: enter `AnySkill`
+> - **Expiration**: pick a duration you're comfortable with
+> - **Repository access**: select **"Only select repositories"**
+>   → Search for and select your `my-skills` repo in the dropdown
+>   ⚠️ Note: if you chose "Public Repositories", the permissions panel below will NOT appear!
+> - After selecting a repo, a **Permissions** panel appears below
+>   → Expand **"Repository permissions"**
+>   → Scroll down to find **"Contents"** (near the top of the list)
+>   → Change it from "No access" to **"Read and write"**
+> - Leave all other permissions at "No access"
+> - Click **"Generate token"** at the bottom
+> - Copy the generated Token (starts with `github_pat_`)
+>
+> **Step 3: Send me your Token and repo name**
+> Format: `github_pat_xxx your-username/my-skills`
+>
+> ---
+>
+> Send it over when you're ready! If you get stuck on any step, just ask.
 
 #### Handling User Response
 
