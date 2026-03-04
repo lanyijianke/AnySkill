@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/lanyijianke/AnySkill/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/lanyijianke/AnySkill?style=flat-square" alt="License" />
+  <a href="https://github.com/lanyijianke/AnySkill/blob/master/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" />
   </a>
   <a href="https://github.com/lanyijianke/AnySkill/actions">
     <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white" alt="CI" />
@@ -19,8 +19,8 @@
   <a href="https://github.com/lanyijianke/AnySkill/generate">
     <img src="https://img.shields.io/badge/Use%20this-Template-2ea44f?style=flat-square" alt="Template" />
   </a>
-  <a href="https://marketplace.visualstudio.com/items?itemName=lanyijianke.anyskill">
-    <img src="https://img.shields.io/visual-studio-marketplace/v/lanyijianke.anyskill?label=VS%20Code&style=flat-square" alt="VS Code Extension" />
+  <a href="https://open-vsx.org/extension/anyskill/anyskill">
+    <img src="https://img.shields.io/open-vsx/v/anyskill/anyskill?style=flat-square&label=VS%20Code" alt="VS Code Extension" />
   </a>
 </p>
 
