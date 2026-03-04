@@ -63,16 +63,26 @@ Authorization: token {token}
 **你应该这样对用户说：**
 
 > 👋 初次见面！在此设备上未检测到 AnySkill 配置。
-> 为了加载你的云端技能，请提供你的 **GitHub Token**。
+> 为了加载你的云端技能，只需提供你的 **GitHub Token** 即可——我会自动帮你查找并挂载已有的技能库。
 >
-> - **如果你已有技能库**：请将 Token 和仓库名一起发给我（例如：`token：ghp_xxx，仓库：lanyijianke/my-skills`）
-> - **如果你还没有技能库**：只需发给我 Token，我将为你全自动创建一个私有技能仓库！
+> 💡 **只发 Token 就够了！** 我会自动搜索你的 GitHub 账号下是否已有技能仓库。如果有，直接挂载；如果没有，自动为你创建一个新的。
+>
+> 你也可以直接指定仓库：`ghp_xxx lanyijianke/my-skills`（Token + 仓库名，空格分隔）。
 >
 > Token 创建方法：
 > 1. 打开 [github.com/settings/tokens](https://github.com/settings/tokens)
 > 2. 点击 **"Generate new token"** → 选择 **"Generate new token (classic)"**（⚠️ 必须选 Classic，不要选 Fine-grained）
 > 3. 勾选权限：✅ **`repo`**（完整的仓库访问权限）
 > 4. 生成后复制 Token（以 `ghp_` 开头），粘贴给我即可
+
+#### 用户回复后的处理逻辑
+
+**判断依据**：用户的回复中是否包含仓库地址（格式为 `用户名/仓库名`）。
+
+- **包含仓库地址** → 走「路径 A」
+- **不包含仓库地址（只有 Token）** → 走「路径 B」
+
+---
 
 #### 路径 A：用户同时提供了 Token 和仓库地址
 
@@ -106,31 +116,41 @@ git clone https://{token}@github.com/{repo}.git {localPath}
 }
 ```
 
-#### 路径 B：用户只提供了 Token（自动发现 + 防重复创建）
+---
 
-用户只给了 Token，没有指定仓库。**AI 必须先探测再行动，严禁直接创建新仓库。**
+#### 路径 B：用户只提供了 Token — 自动发现流程（⚠️ 核心路径）
 
-**第一步：获取用户名**
+> **这是最常见的使用场景。** 用户只给了 Token，没有指定仓库名。
+> **你必须严格按照以下三步执行，严禁跳过任何步骤，严禁直接创建新仓库。**
+
+**第一步：通过 Token 获取用户的 GitHub 用户名**
+
+使用 GitHub API 或命令行工具获取用户信息：
 ```bash
 curl -s -H "Authorization: token {token}" https://api.github.com/user
 ```
-从返回的 JSON 中提取 `login` 字段。
+从返回的 JSON 中提取 `login` 字段，即为用户名。
 
-**第二步：搜索用户名下是否已有 AnySkill 技能库**
+**第二步：自动搜索用户名下是否已有 AnySkill 技能库**
+
+调用 GitHub Repository Search API：
 ```bash
 curl -s -H "Authorization: token {token}" "https://api.github.com/search/repositories?q=user:{login}+anyskill+in:name,description"
 ```
-遍历搜索结果，对每个候选仓库尝试读取 `index.json`（`https://raw.githubusercontent.com/{login}/{候选仓库名}/{默认分支}/index.json`），以此确认它是否为一个真正的 AnySkill 技能库。
+
+对搜索结果中的**每个候选仓库**，尝试读取其 `index.json`：
+`https://raw.githubusercontent.com/{login}/{候选仓库名}/{默认分支}/index.json`
+如果成功读取到 `index.json`，说明该仓库是一个真正的 AnySkill 技能库。
 
 **第三步：根据探测结果分流**
 
-- **探测到已有技能库**：
-  > 👋 欢迎回来！我探测到你名下有一个技能库 `{login}/{仓库名}`。需要我直接挂载它吗？(是/否)
+- **✅ 探测到已有技能库**：告知用户并请求确认：
+  > 👋 欢迎回来！我探测到你名下已有一个技能库 `{login}/{仓库名}`。正在为你自动挂载...
 
-  用户确认后，执行 clone 和配置写入（同路径 A 的步骤 1-4）。
+  然后自动执行 clone 和配置写入（同路径 A 的步骤 1-4），**不再询问多余问题**。
 
-- **未探测到任何技能库（确认为纯新用户）**：
-  1. 询问用户希望的仓库名称（默认建议 `my-anyskill`）。
+- **❌ 未探测到任何技能库**（确认为纯新用户）：
+  1. 告知用户未找到已有仓库，询问希望的仓库名称（默认建议 `my-anyskill`）。
   2. 调用 GitHub Template API 创建私有仓库：
   ```bash
   curl -X POST https://api.github.com/repos/lanyijianke/AnySkill/generate \
