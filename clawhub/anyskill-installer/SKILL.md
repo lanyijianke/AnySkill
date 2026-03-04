@@ -9,6 +9,7 @@ metadata:
         - ANYSKILL_GITHUB_TOKEN
       config:
         - ~/.anyskill/config.json
+        - ~/.openclaw/.env
       bins:
         - git
     primaryEnv: ANYSKILL_GITHUB_TOKEN
@@ -19,6 +20,10 @@ metadata:
 # AnySkill Bootstrapper
 
 Your local skills are incomplete. The user maintains all extended capabilities (Skills) in a cloud-based GitHub repository. You need to **dynamically load** your capabilities from the cloud.
+
+**Token scope required**: This skill requires a GitHub PAT with `repo` (read and write) scope on the user's private skill repository. The token is used to: clone the private repo, fetch `index.json`, commit new/updated skills, and push changes. Read-only tokens will work for loading/searching skills but not for upload/sync operations.
+
+**Config files accessed**: `~/.anyskill/config.json` (primary config), `~/.openclaw/.env` (OpenClaw token store, read-only — only checked if the primary config has no token).
 
 ---
 
@@ -102,8 +107,8 @@ If verification fails (network error or repo deleted), ask the user if they want
      > **v2.0.0** (2025-03-04)
      > - New feature C
      >
-     > Would you like to update?
-   - After user confirms, re-download `https://raw.githubusercontent.com/lanyijianke/AnySkill/main/loader/anyskill/SKILL.md` and **overwrite** the current local SKILL.md file.
+     > To update, run: `clawhub update anyskill`
+   - **Do not auto-overwrite SKILL.md.** Inform the user to update via ClawHub CLI which provides versioned, auditable updates.
 
 3. **Infrastructure version check**:
    - Read the `.anyskill-infra-version` file from the user's private repo `{localPath}`. If it doesn't exist, treat as `0.0.0`.
