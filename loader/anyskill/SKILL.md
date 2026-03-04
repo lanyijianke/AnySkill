@@ -187,10 +187,13 @@ git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
 3. 在 `{localPath}/skills/{用户指定的名称}/` 下创建 `SKILL.md`。
    - `SKILL.md` 必须包含正确的 YAML frontmatter（`name` 和 `description`）。
    - 如果用户提供了额外文件（脚本、参考资料等），一并放入对应子目录。
-4. 执行以下 git 操作：
+4. **自动补全基础设施文件**（首次上传时可能缺失）：
+   - 检查 `{localPath}/.github/workflows/build-index.yml` 是否存在，如不存在则从模板仓库下载：`https://raw.githubusercontent.com/lanyijianke/AnySkill/main/.github/workflows/build-index.yml`
+   - 检查 `{localPath}/generate-index.js` 是否存在，如不存在则从模板仓库下载：`https://raw.githubusercontent.com/lanyijianke/AnySkill/main/generate-index.js`
+5. 执行以下 git 操作：
    ```bash
    cd {localPath}
-   git add skills/{用户指定的名称}/
+   git add -A
    git commit -m "feat: add skill {用户指定的名称}"
    git push origin {branch}
    ```
