@@ -201,15 +201,29 @@ git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
    > ✅ 技能 `{名称}` 已上传到云端仓库！
    > GitHub Actions 将在几秒后自动重建 `index.json`，届时其他项目即可加载此技能。
 
-### 更新已有技能
+---
 
-如果 `{localPath}/skills/{名称}/` 已存在，AI 应：
-1. 询问用户是否要覆盖更新。
-2. 确认后修改文件，commit message 使用 `fix: update skill {名称}`。
+## 模式五：更新指定技能
+
+当用户明确说 **"更新 XX 技能"、"修改 XX skill"、"改一下 XX"** 等类似指令时：
+
+1. 读取 `.anyskill.json` 中的 `localPath`。
+2. 确认 `{localPath}/skills/{名称}/` 是否存在。如不存在，告知用户该技能不存在，建议使用上传模式新建。
+3. 读取现有的 `SKILL.md` 内容展示给用户，询问需要修改哪些部分。
+4. 根据用户的描述修改对应文件。
+5. 执行 git 操作：
+   ```bash
+   cd {localPath}
+   git add skills/{名称}/
+   git commit -m "fix: update skill {名称}"
+   git push origin {branch}
+   ```
+6. 完成后告知用户：
+   > ✅ 技能 `{名称}` 已更新！GitHub Actions 将自动更新索引。
 
 ---
 
-## 模式五：列出云端技能
+## 模式六：列出云端技能
 
 当用户明确说 **"列出技能"、"有哪些技能"、"看看云端有什么"、"技能列表"** 等类似指令时：
 
@@ -225,7 +239,7 @@ git clone https://{token}@github.com/{login}/{仓库名}.git /tmp/{仓库名}
 
 ---
 
-## 模式六：删除指定技能
+## 模式七：删除指定技能
 
 当用户明确说 **"删除 XX 技能"、"移除 XX skill"、"把 XX 从仓库删掉"** 等类似指令时：
 
