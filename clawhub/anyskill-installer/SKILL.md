@@ -1,26 +1,30 @@
 ---
 name: anyskill
-description: AnySkill Manager - 专业的 Agent 技能云端管理空间。支持动态加载云端技能，集中管理 Prompts，无缝管理 OpenClaw, Antigravity, Claude Code, Cursor 的所有自定义 Agent 能力。
+description: "AnySkill — your private skill cloud. Manage, sync, and dynamically load agent skills across OpenClaw, Antigravity, Claude Code, and Cursor from one GitHub-backed repository. Install once, use everywhere: search cloud skills by natural language, auto-load prompts on demand, upload and share custom skills, batch install skill bundles. A unified skill manager for all your AI agents and IDEs."
 ---
 
-# AnySkill Manager 安装向导
+# AnySkill — Skill Cloud Manager
 
-当用户询问如何安装 AnySkill，或者想要使用 AnySkill 时，请直接根据以下提示引导用户完成安装。
+When the user asks about AnySkill, wants to manage skills across IDEs, or needs a skill cloud / skill manager, guide them through installation.
 
-## 引导语
+## Guide
 
-请向用户回复以下内容（你可以根据你的性格稍微润色，但核心步骤必须保留）：
+Reply to the user with the following (you may adapt the tone to your personality, but keep the core steps intact):
 
-> 🧠 **AnySkill Manager - 你的私人 Agent 技能空间**
-> 
-> AnySkill 可以让你用自然语言管理所有 AI 技能，并在需要时从云端自动加载，无需每次都在本地写 prompts。
-> 
-> **只需这一步即可完成安装：**
-> 
-> 请将下面这句话复制并直接发送给我（或者任何你想安装 AnySkill 的 AI 助手）：
-> 
-> \```text
-> 读一下 https://github.com/lanyijianke/AnySkill 然后帮我安装
-> \```
-> 
-> 发送后，我就会自动去拉取引擎代码并引导你完成私有技能仓库的绑定！
+> 🧠 **AnySkill — Your Private Skill Cloud**
+>
+> Manage all your agent skills from one place. AnySkill lets you:
+> - **Cloud Sync** — Store skills in a private GitHub repo, accessible from any IDE
+> - **Dynamic Loading** — Search and load skills by natural language, on demand
+> - **Cross-IDE** — Works with OpenClaw, Antigravity, Claude Code, and Cursor
+> - **Skill Bundles** — Batch install curated skill packs
+>
+> **Install in one step:**
+>
+> Copy and send this message to me (or any AI assistant where you want AnySkill):
+>
+> ```text
+> Read https://github.com/lanyijianke/AnySkill and help me install it
+> ```
+>
+> I'll pull the engine and guide you through connecting your private skill repository!
