@@ -1,7 +1,28 @@
 {
     "engine": {
         "version": "2.0.0",
-        "changelog": "IDE 智能分仓、版本自动检查、OpenClaw workspace 集成、模板清理"
+        "changelog": [
+            {
+                "version": "2.0.0",
+                "date": "2025-03-04",
+                "changes": [
+                    "IDE 智能分仓：OpenClaw 默认 my-skills-claw，开发 IDE 默认 my-skills-dev",
+                    "版本自动检查：引擎 + 基础设施双通道更新",
+                    "OpenClaw workspace 集成：安装时自动配置 TOOLS.md 和 AGENTS.md",
+                    "模板清理：新建仓库自动移除 loader/ 和 init.sh"
+                ]
+            },
+            {
+                "version": "1.0.0",
+                "date": "2025-03-03",
+                "changes": [
+                    "初始版本：九大操作模式",
+                    "支持 Antigravity / Claude Code / Cursor / OpenClaw 四大 IDE",
+                    "全局配置 + Token 自动发现",
+                    "GitHub Template API 一键创建私有仓库"
+                ]
+            }
+        ]
     },
     "infra": {
         "version": "1.0.0",
@@ -9,6 +30,14 @@
             "generate-index.js",
             ".github/workflows/build-index.yml"
         ],
-        "changelog": "初始版本"
+        "changelog": [
+            {
+                "version": "1.0.0",
+                "date": "2025-03-03",
+                "changes": [
+                    "初始版本：零依赖索引生成 + GitHub Actions 自动构建"
+                ]
+            }
+        ]
     }
 }

@@ -59,26 +59,50 @@ Authorization: token {token}
    该文件结构为：
    ```json
    {
-     "engine": { "version": "x.y.z", "changelog": "..." },
-     "infra": { "version": "x.y.z", "files": ["generate-index.js", ".github/workflows/build-index.yml"], "changelog": "..." }
+     "engine": {
+       "version": "x.y.z",
+       "changelog": [
+         { "version": "x.y.z", "date": "YYYY-MM-DD", "changes": ["变更1", "变更2"] },
+         { "version": "x.y.z", "date": "YYYY-MM-DD", "changes": ["变更1"] }
+       ]
+     },
+     "infra": {
+       "version": "x.y.z",
+       "files": ["generate-index.js", ".github/workflows/build-index.yml"],
+       "changelog": [
+         { "version": "x.y.z", "date": "YYYY-MM-DD", "changes": ["变更1"] }
+       ]
+     }
    }
    ```
 
 2. **引擎版本检查**：
-   - 读取本文件（SKILL.md）frontmatter 中的 `version` 字段（当前为 `1.1.0`）。
+   - 读取本文件（SKILL.md）frontmatter 中的 `version` 字段（当前为 `2.0.0`）。
    - 与远程 `engine.version` 对比。
-   - 如果远程版本**更高**，提示用户：
+   - 如果远程版本**更高**，从 `engine.changelog` 数组中筛选出**所有高于本地版本的条目**，按版本号从新到旧展示给用户：
      > 🔔 AnySkill 引擎有新版本 v{remote}（当前 v{local}）
-     > 📋 更新内容：{engine.changelog}
+     >
+     > 📋 **更新历史：**
+     > **v2.1.0** (2025-03-10)
+     > - 新功能 A
+     > - 改进 B
+     >
+     > **v2.0.0** (2025-03-04)
+     > - 新功能 C
+     >
      > 要更新吗？
    - 用户确认后，重新下载 `https://raw.githubusercontent.com/lanyijianke/AnySkill/main/loader/anyskill/SKILL.md` 并**覆盖**当前本地的 SKILL.md 文件。
 
 3. **基础设施版本检查**：
    - 读取用户私有仓库 `{localPath}` 下的 `.anyskill-infra-version` 文件。如果不存在，视为 `0.0.0`。
    - 与远程 `infra.version` 对比。
-   - 如果远程版本**更高**，提示用户：
+   - 如果远程版本**更高**，同样从 `infra.changelog` 数组中筛选并展示所有新版本的变更：
      > 🔔 仓库基础设施有更新 v{remote}（当前 v{local}）
-     > 📋 更新内容：{infra.changelog}
+     >
+     > 📋 **更新历史：**
+     > **v1.1.0** (2025-03-10)
+     > - 改进索引生成
+     >
      > 要更新吗？
    - 用户确认后，遍历 `infra.files` 数组，逐一从上游下载并覆盖到用户的 `{localPath}` 中：
      ```
