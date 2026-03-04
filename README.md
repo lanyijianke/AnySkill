@@ -65,7 +65,7 @@ curl -sSL https://raw.githubusercontent.com/lanyijianke/AnySkill/main/init.sh | 
 | **按需加载** | 给 AI 下达任务时自动触发 | 从云端读取 Skill 到内存，不落盘，一次性使用 |
 | **按需下载** | "下载 XX 技能" / "安装 XX skill" | 下载指定 Skill 文件夹到本地 IDE 技能目录 |
 | **全量下载** | "下载所有技能" / "同步云端技能" | 把所有 Skill 完整下载到本地 |
-| **发布技能** | "发布技能" / "把技能推到云端" | 在本地仓库创建 Skill 文件夹并 git push |
+| **上传技能** | "上传技能" / "把技能推到云端" | 在本地仓库创建 Skill 文件夹并 git push |
 
 ## 私有仓库鉴权
 

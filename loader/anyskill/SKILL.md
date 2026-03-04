@@ -156,34 +156,35 @@ git clone https://{token}@github.com/{用户名}/{仓库名}.git /tmp/{仓库名
 
 ---
 
-## 模式四：发布技能到云端
+## 模式四：上传技能到云端
 
-当用户明确说 **"发布技能"、"上传这个 skill"、"把技能推到云端"、"发布到仓库"** 等类似指令时，执行发布流程。
+当用户明确说 **"上传技能"、"上传这个 skill"、"把技能推到云端"、"传到仓库"** 等类似指令时，执行上传流程。
 
 读取 `.anyskill.json` 中的 `localPath`，在本地仓库中操作。
 
-### 发布步骤
+### 上传步骤
 
-1. 与用户确认要发布的技能名称（`skill-name`）和内容。
-2. 在 `{localPath}/skills/{skill-name}/` 下创建 `SKILL.md`。
+1. 与用户确认要上传的技能内容。
+2. **技能文件夹名称必须使用用户提供的原始名称**，严禁擅自翻译或改名。如果用户给的是中文名（如 `前端设计`），文件夹就叫 `前端设计`；如果是英文名（如 `web-scraper`），就用英文。
+3. 在 `{localPath}/skills/{用户指定的名称}/` 下创建 `SKILL.md`。
    - `SKILL.md` 必须包含正确的 YAML frontmatter（`name` 和 `description`）。
    - 如果用户提供了额外文件（脚本、参考资料等），一并放入对应子目录。
-3. 执行以下 git 操作：
+4. 执行以下 git 操作：
    ```bash
    cd {localPath}
-   git add skills/{skill-name}/
-   git commit -m "feat: add skill {skill-name}"
+   git add skills/{用户指定的名称}/
+   git commit -m "feat: add skill {用户指定的名称}"
    git push origin {branch}
    ```
-4. 完成后告知用户：
-   > ✅ 技能 `{skill-name}` 已发布到云端仓库！
+5. 完成后告知用户：
+   > ✅ 技能 `{名称}` 已上传到云端仓库！
    > GitHub Actions 将在几秒后自动重建 `index.json`，届时其他项目即可加载此技能。
 
 ### 更新已有技能
 
-如果 `{localPath}/skills/{skill-name}/` 已存在，AI 应：
+如果 `{localPath}/skills/{名称}/` 已存在，AI 应：
 1. 询问用户是否要覆盖更新。
-2. 确认后修改文件，commit message 使用 `fix: update skill {skill-name}`。
+2. 确认后修改文件，commit message 使用 `fix: update skill {名称}`。
 
 ---
 
