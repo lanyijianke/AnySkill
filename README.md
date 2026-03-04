@@ -60,7 +60,9 @@ Push 后 GitHub Actions 自动更新 `index.json`。
 
 > "帮我安装 AnySkill，仓库地址：`lanyijianke/AnySkill`"
 
-AI 会自动拼接下载地址 `https://raw.githubusercontent.com/{repo}/main/loader/anyskill/SKILL.md`，判断 IDE 类型、创建目录、下载文件。你什么都不用做。
+AI 会自动从公开模板仓库下载破冰者文件，判断 IDE 类型、创建目录。你什么都不用做。
+
+> ⚠️ 这里用的是**公开模板仓库**地址，不是你自己的私有仓库。你自己的仓库地址会在首次使用时通过对话配置。
 
 **方式 B：手动复制**
 
