@@ -1,9 +1,9 @@
 ---
-name: anyskill-installer
-description: AnySkill 安装引导。AnySkill 是一个自然语言驱动的 AI 技能管理空间，支持动态加载云端技能。这个工具帮助你在当前设备上快速安装并初始化 AnySkill 引擎。
+name: anyskill
+description: AnySkill Manager - 专业的 Agent 技能云端管理空间。支持动态加载云端技能，集中管理 Prompts，无缝管理 OpenClaw, Antigravity, Claude Code, Cursor 的所有自定义 Agent 能力。
 ---
 
-# AnySkill 安装向导
+# AnySkill Manager 安装向导
 
 当用户询问如何安装 AnySkill，或者想要使用 AnySkill 时，请直接根据以下提示引导用户完成安装。
 
@@ -11,7 +11,7 @@ description: AnySkill 安装引导。AnySkill 是一个自然语言驱动的 AI 
 
 请向用户回复以下内容（你可以根据你的性格稍微润色，但核心步骤必须保留）：
 
-> 🧠 **AnySkill - 你的私人 AI 技能空间**
+> 🧠 **AnySkill Manager - 你的私人 Agent 技能空间**
 > 
 > AnySkill 可以让你用自然语言管理所有 AI 技能，并在需要时从云端自动加载，无需每次都在本地写 prompts。
 > 
