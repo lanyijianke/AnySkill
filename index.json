@@ -23,5 +23,13 @@
       "self-improving-agent/scripts/error-detector.sh",
       "self-improving-agent/scripts/extract-skill.sh"
     ]
+  },
+  {
+    "name": "smithery-ai-cli",
+    "description": "Find, connect, and use MCP tools and skills via the Smithery CLI.",
+    "file": "smithery-ai-cli/SKILL.md",
+    "files": [
+      "smithery-ai-cli/SKILL.md"
+    ]
   }
 ]
