@@ -269,7 +269,9 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 
 找到 OpenClaw workspace 的 `TOOLS.md` 文件（路径：`~/.openclaw-config/workspace/TOOLS.md` 或 `{OpenClaw项目根}/.openclaw-config/workspace/TOOLS.md`）。
 
-先检查文件中是否已包含 `### AnySkill` 段落。如果**没有**，在文件末尾追加以下内容：
+先检查文件中是否已包含 `### AnySkill` 段落。然后读取 `index.json`（本地 `{localPath}/index.json` 或远程拉取），获取当前所有技能清单。
+
+如果 `### AnySkill` 段落**不存在**，在文件末尾追加；如果**已存在**，则**整段替换**（确保技能列表是最新的）：
 
 ```markdown
 
@@ -280,9 +282,18 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 - **本地路径**: `{localPath}`
 - **技能加载**: 当你缺少某个技能时，读取 `~/.openclaw/skills/anyskill/SKILL.md` 中的引导流程，从云端 AnySkill 仓库按需加载
 - **操作方式**: 所有技能管理（加载、下载、上传、列出、删除）均通过自然语言触发，无需命令行
+
+#### 已注册的云端技能
+
+| 技能名 | 描述 |
+|:---|:---|
+| `{name}` | {description} |
+| ... | ... |
+
+（以上列表从 `index.json` 动态生成，每次技能增删改后自动更新）
 ```
 
-如果已存在 `### AnySkill` 段落，则**更新**其中的仓库地址和本地路径，不要重复追加。
+> 📌 **「已注册的云端技能」表格必须从 `index.json` 实时生成**，遍历所有 skill 条目，填入 `name` 和 `description`。如果 `index.json` 为空或拉取失败，显示「暂无技能」。
 
 **第二步：追加 `AGENTS.md`**
 
@@ -298,6 +309,12 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 如果已存在 AnySkill 相关内容，跳过此步骤。
 
 > ⚠️ 这两个文件的**其他内容严禁修改**。只做追加或更新 AnySkill 段落，绝不覆盖用户已有的配置。
+
+#### OpenClaw 技能注册表同步（通用规则）
+
+> 📌 **凡是导致技能列表变化的操作**（模式四上传、模式五更新、模式七删除、模式九 Pack 安装），在操作完成后，如果当前环境是 OpenClaw，**必须重新读取最新的 `index.json`，并按上述格式整段替换 `TOOLS.md` 中的 `### AnySkill` 段落**，确保「已注册的云端技能」表格始终与云端保持一致。
+>
+> 此同步操作应在 git push 完成并等待几秒后执行（因为 GitHub Actions 需要重建 `index.json`），或直接从本地 `{localPath}/index.json` 读取最新内容。
 
 然后继续执行用户的原始请求。
 
@@ -387,6 +404,7 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 5. 完成后告知用户：
    > ✅ 技能 `{名称}` 已上传到云端仓库！
    > GitHub Actions 将在几秒后自动重建 `index.json`，届时其他项目即可加载此技能。
+6. **如果当前环境是 OpenClaw**，执行「OpenClaw 技能注册表同步」，更新 `TOOLS.md` 中的技能列表。
 
 ---
 
@@ -407,6 +425,7 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
    ```
 6. 完成后告知用户：
    > ✅ 技能 `{名称}` 已更新！GitHub Actions 将自动更新索引。
+7. **如果当前环境是 OpenClaw**，执行「OpenClaw 技能注册表同步」，更新 `TOOLS.md` 中的技能列表。
 
 ---
 
@@ -443,6 +462,7 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
    ```
 5. 完成后告知用户：
    > ✅ 技能 `{名称}` 已从云端仓库删除。GitHub Actions 将自动更新索引。
+6. **如果当前环境是 OpenClaw**，执行「OpenClaw 技能注册表同步」，从 `TOOLS.md` 的技能列表中移除该技能。
 
 ---
 
@@ -499,6 +519,7 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
    > ✅ 组合包 `{category}` 安装完毕！
    > - 成功：{N} 个（skill-a, skill-b）
    > - 失败：{M} 个（skill-x — 原因：下载失败）
+6. **如果当前环境是 OpenClaw**，执行「OpenClaw 技能注册表同步」，更新 `TOOLS.md` 中的技能列表。
 
 ---
 
