@@ -1,0 +1,33 @@
+name: Build Skills Index
+
+on:
+  push:
+    paths:
+      - 'skills/**'
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Generate index.json
+        run: node generate-index.js
+
+      - name: Commit and push index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.json
+          # Only commit if there are changes
+          git diff --staged --quiet || git commit -m "chore: auto-update index.json"
+          git push

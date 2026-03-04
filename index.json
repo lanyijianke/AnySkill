@@ -1,0 +1,7 @@
+[
+  {
+    "name": "hello-world",
+    "description": "这是一个示例 Skill 文件。你可以删除它，然后在这里放入你自己的技能。",
+    "file": "hello-world.md"
+  }
+]
