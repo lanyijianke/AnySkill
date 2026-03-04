@@ -2,7 +2,7 @@
 
 ### *One Skill to Rule Them All.*
 
-**面向 AI 编程助手的云端技能分发系统**
+**你的私人 AI 技能空间**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![GitHub Actions](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/lanyijianke/AnySkill/actions)
@@ -10,8 +10,8 @@
 
 ---
 
-维护一个私有技能仓库，一句话注入到任何项目。
-AI 助手从**你自己的云端**动态加载能力 — 你的 Skill 内容永不暴露。
+每个人都应该有自己的私人技能空间 — 安全、透明、随用随取。
+用一个 GitHub 私有仓库存放你所有的 AI 技能，一句话注入任何项目，全程自然语言操作。
 
 ---
 
