@@ -28,23 +28,17 @@ Authorization: token {token}
 
 **你应该这样对用户说：**
 
-> 👋 你好！我检测到这是你第一次在这个项目使用 AnySkill。
-> 我需要知道你的云端技能仓库地址，这样我才能帮你从云端加载技能。
+> 👋 你好！我检测到这是你第一次使用 AnySkill。
+> 你已经有自己的云端技能仓库了吗？
 >
-> 1. 请告诉我你的 GitHub 仓库地址（格式：`用户名/仓库名`）
-> 2. 你的仓库是公开的还是私有的？如果是私有的，请提供一个 GitHub Personal Access Token。
+> **A.** 已经有了 — 请告诉我仓库地址（格式：`用户名/仓库名`）
+> **B.** 还没有 — 我可以帮你一键创建！只需要提供你的 GitHub Personal Access Token（需要 `repo` 权限）
 
-用户回复后，你**自动在项目根目录创建 `.anyskill.json`**：
+#### 路径 A：用户已有仓库
 
-公开仓库：
-```json
-{
-  "repo": "用户提供的地址",
-  "branch": "main"
-}
-```
-
-私有仓库：
+用户提供仓库地址后：
+1. 询问仓库是公开还是私有（私有需提供 token）。
+2. 在项目根目录创建 `.anyskill.json`：
 ```json
 {
   "repo": "用户提供的地址",
@@ -53,8 +47,32 @@ Authorization: token {token}
 }
 ```
 
-创建完成后告知用户：
-> ✅ 已为你配置 AnySkill！从现在起，我可以从你的云端仓库动态加载所有技能了。
+#### 路径 B：帮用户自动创建私有仓库
+
+用户提供 GitHub Token 后：
+1. 询问用户希望的仓库名称（默认建议 `my-anyskill`）。
+2. 调用 GitHub Template API 创建私有仓库：
+```bash
+curl -X POST https://api.github.com/repos/lanyijianke/AnySkill/generate \
+  -H "Authorization: token {用户的token}" \
+  -H "Accept: application/vnd.github+json" \
+  -d '{"owner":"{用户名}","name":"{仓库名}","private":true,"description":"My AnySkill private skill repository"}'
+```
+3. 创建成功后，自动拼接仓库地址并写入 `.anyskill.json`：
+```json
+{
+  "repo": "{用户名}/{仓库名}",
+  "branch": "main",
+  "token": "ghp_xxxxxxxxxxxx"
+}
+```
+
+#### 初始化完成
+
+无论走哪条路径，完成后告知用户：
+> ✅ AnySkill 配置完成！
+> 📦 你的技能仓库：`{repo}`
+> 从现在起，我可以从你的云端仓库动态加载所有技能了。
 > ⚠️ `.anyskill.json` 已被加入 `.gitignore`，不会被提交到版本控制中。
 
 然后继续执行用户的原始请求。
