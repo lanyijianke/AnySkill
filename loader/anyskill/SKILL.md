@@ -1,7 +1,7 @@
 ---
 name: anyskill-loader
-version: 2.0.0
-description: 作为所有工作流的"破冰"入口。当用户要求你做特定任务（如前端设计、API 集成、文本处理、调用外部 MCP）而你本地没有这些技能时，必须优先查阅并加载云端 AnySkill 技能系统。也支持将云端全部技能批量下载到当前项目，或将本地技能发布到云端仓库。
+version: 2.1.0
+description: 作为所有工作流的"破冰"入口。当用户要求你做特定任务（如前端设计、API 集成、文本处理、调用外部 MCP）而你本地没有这些技能时，必须优先查阅并加载云端 AnySkill 技能系统。也支持将云端全部技能批量下载到当前项目，或将本地技能发布到云端仓库。支持 skills/ 目录下的分类文件夹管理。
 ---
 
 # AnySkill Bootstrapper
@@ -344,7 +344,7 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 1. 按优先级链读取 AnySkill 配置（全局 `~/.anyskill/config.json` → 项目级 `.anyskill.json`）。
 2. 使用你的网页读取工具拉取索引地址的 `index.json`（如有 token 需携带认证头）。
 3. 根据各 skill 的 `description` 寻找最匹配当前任务的条目。
-4. 按 `files` 数组，逐个从云端读取该 skill 文件夹下的所有文件到**内存中**（不落盘到本地），然后消化 `SKILL.md` 中的规范。
+4. 按 `files` 数组，逐个从云端读取该 skill 文件夹下的所有文件到**内存中**（不落盘到本地），然后消化 `SKILL.md` 中的规范。使用 `path` 字段拼接文件路径（如 `{文件基地址}{path}/SKILL.md`），不要硬编码假设技能在顶层。
 5. 基于读取到的规范完成用户的原始需求。
 
 > 💡 按需加载是轻量级操作，不会在本地留下任何文件。适合一次性使用或试用技能。
@@ -358,7 +358,7 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 1. 按优先级链读取 AnySkill 配置。
 2. 拉取 `index.json`，根据用户指定的名称或描述匹配目标 skill。
 3. **识别当前 AI IDE 环境**，确定落盘路径（见下方路径对照表）。
-4. 按该 skill 的 `files` 数组，逐一下载每个文件到本地 IDE 技能目录，**保持原始目录结构**。
+4. 按该 skill 的 `files` 数组，逐一下载每个文件。下载时使用 `path` 字段拼接云端 URL，但落盘到本地时**只使用技能名作为文件夹名**（去掉分类前缀），保持 IDE skills 目录整洁。
 5. 完成后告知用户：已将技能 `{skill-name}` 下载到 `{落盘路径}`，共 N 个文件。
 
 ---
@@ -405,23 +405,30 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 
 1. 与用户确认要上传的技能内容。
 2. **技能文件夹名称必须使用用户提供的原始名称**，严禁擅自翻译或改名。如果用户给的是中文名（如 `前端设计`），文件夹就叫 `前端设计`；如果是英文名（如 `web-scraper`），就用英文。
-3. 在 `{localPath}/skills/{用户指定的名称}/` 下创建 `SKILL.md`。
+3. **询问用户是否要归入某个分类文件夹**：
+   - 先检查 `{localPath}/skills/` 下是否已有分类文件夹（即不包含 SKILL.md 的子目录）。
+   - 如果存在分类文件夹，展示给用户选择：
+     > 📂 当前已有分类文件夹：`core`、`dev`、`content`
+     > 要把这个技能放入哪个分类？（直接回复分类名，或回复"不分类"放在顶层）
+   - 如果用户指定了分类，保存到 `{localPath}/skills/{分类}/{名称}/`
+   - 如果用户说"不分类"或没有分类文件夹，保存到 `{localPath}/skills/{名称}/`
+4. 在目标路径下创建 `SKILL.md`。
    - `SKILL.md` 必须包含正确的 YAML frontmatter（`name` 和 `description`）。
    - 如果用户提供了额外文件（脚本、参考资料等），一并放入对应子目录。
-4. **自动补全基础设施文件**（首次上传时可能缺失）：
+5. **自动补全基础设施文件**（首次上传时可能缺失）：
    - 检查 `{localPath}/.github/workflows/build-index.yml` 是否存在，如不存在则从模板仓库下载：`https://raw.githubusercontent.com/lanyijianke/AnySkill/main/.github/workflows/build-index.yml`
    - 检查 `{localPath}/generate-index.js` 是否存在，如不存在则从模板仓库下载：`https://raw.githubusercontent.com/lanyijianke/AnySkill/main/generate-index.js`
-5. 执行以下 git 操作：
+6. 执行以下 git 操作：
    ```bash
    cd {localPath}
    git add -A
    git commit -m "feat: add skill {用户指定的名称}"
    git push origin {branch}
    ```
-5. 完成后告知用户：
+7. 完成后告知用户：
    > ✅ 技能 `{名称}` 已上传到云端仓库！
    > GitHub Actions 将在几秒后自动重建 `index.json`，届时其他项目即可加载此技能。
-6. **如果当前环境是 OpenClaw**，执行「OpenClaw 技能注册表同步」，更新 `TOOLS.md` 中的技能列表。
+8. **如果当前环境是 OpenClaw**，执行「OpenClaw 技能注册表同步」，更新 `TOOLS.md` 中的技能列表。
 
 ---
 
@@ -430,13 +437,13 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 当用户明确说 **"更新 XX 技能"、"修改 XX skill"、"改一下 XX"** 等类似指令时：
 
 1. 按优先级链读取 AnySkill 配置中的 `localPath`。
-2. 确认 `{localPath}/skills/{名称}/` 是否存在。如不存在，告知用户该技能不存在，建议使用上传模式新建。
+2. 先拉取 `index.json`，通过 `name` 匹配找到目标技能的 `path` 字段，然后确认 `{localPath}/skills/{path}/` 是否存在。如果 `index.json` 中找不到该技能，也尝试在 `{localPath}/skills/` 下递归搜索同名文件夹。如不存在，告知用户该技能不存在，建议使用上传模式新建。
 3. 读取现有的 `SKILL.md` 内容展示给用户，询问需要修改哪些部分。
 4. 根据用户的描述修改对应文件。
 5. 执行 git 操作：
    ```bash
    cd {localPath}
-   git add skills/{名称}/
+   git add skills/{path}/
    git commit -m "fix: update skill {名称}"
    git push origin {branch}
    ```
@@ -452,11 +459,24 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 
 1. 按优先级链读取 AnySkill 配置。
 2. 拉取 `index.json`。
-3. 以表格形式展示所有技能：
+3. **按分类分组展示**技能。先展示有分类的技能（按 `category` 分组），再展示无分类的顶层技能：
 
+**📂 core**
 | 技能名 | 描述 | 文件数 |
 |:---|:---|:---|
 | `{name}` | `{description}` | `{files.length}` |
+
+**📂 dev**
+| 技能名 | 描述 | 文件数 |
+|:---|:---|:---|
+| `{name}` | `{description}` | `{files.length}` |
+
+**📄 未分类**
+| 技能名 | 描述 | 文件数 |
+|:---|:---|:---|
+| `{name}` | `{description}` | `{files.length}` |
+
+如果所有技能都没有分类（`category` 为空），则使用原来的单一表格展示。
 
 4. 展示完毕后询问用户是否需要加载或下载某个技能。
 
@@ -467,13 +487,13 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 当用户明确说 **"删除 XX 技能"、"移除 XX skill"、"把 XX 从仓库删掉"** 等类似指令时：
 
 1. 按优先级链读取 AnySkill 配置中的 `localPath`。
-2. 确认 `{localPath}/skills/{用户指定的名称}/` 是否存在。
+2. 先拉取 `index.json`，通过 `name` 匹配找到目标技能的 `path` 字段，然后确认 `{localPath}/skills/{path}/` 是否存在。如果 `index.json` 中找不到，也尝试递归搜索。
 3. **必须向用户确认**：
-   > ⚠️ 即将删除技能 `{名称}`，此操作会从云端仓库中永久移除该文件夹。确认删除吗？
+   > ⚠️ 即将删除技能 `{名称}`（位于 `skills/{path}/`），此操作会从云端仓库中永久移除该文件夹。确认删除吗？
 4. 用户确认后，执行：
    ```bash
    cd {localPath}
-   git rm -rf skills/{名称}/
+   git rm -rf skills/{path}/
    git commit -m "feat: remove skill {名称}"
    git push origin {branch}
    ```
@@ -540,6 +560,87 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 
 ---
 
+## 模式十：管理技能文件夹
+
+当用户明确说 **"新建文件夹"、"创建分类"、"删除文件夹"、"删除分类"、"移动技能到"、"技能分类"、"查看分类"** 等类似指令时：
+
+读取 AnySkill 配置中的 `localPath`，在本地仓库中操作。
+
+### 新建分类文件夹
+
+触发语句："新建文件夹 XX"、"创建分类 XX"
+
+1. 在 `{localPath}/skills/` 下创建指定名称的文件夹。
+2. 分类文件夹**不需要** SKILL.md，它只是一个组织容器。
+3. 添加 `.gitkeep` 文件以确保空文件夹能被 Git 追踪。
+4. 执行 git 操作：
+   ```bash
+   cd {localPath}
+   mkdir -p skills/{文件夹名}
+   touch skills/{文件夹名}/.gitkeep
+   git add skills/{文件夹名}/
+   git commit -m "feat: create category folder {文件夹名}"
+   git push origin {branch}
+   ```
+5. 告知用户：
+   > ✅ 已创建分类文件夹 `{文件夹名}`。你可以在上传技能时选择放入此分类。
+
+### 删除分类文件夹
+
+触发语句："删除文件夹 XX"、"删除分类 XX"
+
+1. 检查 `{localPath}/skills/{文件夹名}/` 是否存在。
+2. 检查该文件夹下是否还有技能（包含 SKILL.md 的子文件夹）。
+   - 如果**有技能**，提示用户：
+     > ⚠️ 文件夹 `{文件夹名}` 下还有 N 个技能，请先移走或删除它们。
+   - 如果**没有技能**（空文件夹或只有 .gitkeep），向用户确认后删除。
+3. 用户确认后，执行：
+   ```bash
+   cd {localPath}
+   git rm -rf skills/{文件夹名}/
+   git commit -m "feat: remove category folder {文件夹名}"
+   git push origin {branch}
+   ```
+
+### 移动技能到指定文件夹
+
+触发语句："移动技能 XX 到 YY"、"把 XX 归类到 YY"
+
+1. 先拉取 `index.json`，通过 `name` 匹配找到技能的当前 `path`。
+2. 确认目标文件夹 `{localPath}/skills/{目标文件夹}/` 存在。如不存在，自动创建。
+3. 执行移动：
+   ```bash
+   cd {localPath}
+   git mv skills/{当前path}/ skills/{目标文件夹}/{技能名}/
+   git commit -m "feat: move skill {技能名} to {目标文件夹}"
+   git push origin {branch}
+   ```
+4. 告知用户：
+   > ✅ 已将技能 `{技能名}` 从 `{原位置}` 移动到 `{目标文件夹}/`。
+
+### 查看分类结构
+
+触发语句："查看分类"、"技能分类"、"目录结构"
+
+1. 读取 `{localPath}/skills/` 的目录结构。
+2. 以树状图展示：
+
+```
+skills/
+├── 📂 core/
+│   ├── brainstorming/
+│   └── writing-plans/
+├── 📂 dev/
+│   ├── javascript-sdk/
+│   └── frontend-design/
+├── copywriting/          ← 未分类
+└── my-crawler/           ← 未分类
+```
+
+3. 展示完毕后提示用户可用的操作：新建文件夹、移动技能等。
+
+---
+
 ## 行为准则
 
 * 永远不要猜测细节，必须依赖云端获取"注入能力"。
@@ -547,3 +648,4 @@ curl -s -H "Authorization: token {token}" "https://api.github.com/search/reposit
 * 如果 `index.json` 中没有匹配的 skill，直接告知用户当前云端库暂无对应能力。
 * 如果网络请求失败，向用户报告并建议检查网络连接或仓库可用性。
 * **整个过程中，绝不要求用户手动执行终端命令。** 所有文件创建、下载、git 操作均由你自动完成。
+* 所有涉及 `skills/` 路径的操作，都必须使用 `index.json` 中的 `path` 字段来定位技能的实际位置，不要硬编码假设技能在 `skills/` 的顶层。

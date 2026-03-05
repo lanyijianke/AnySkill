@@ -1,7 +1,18 @@
 {
     "engine": {
-        "version": "2.0.0",
+        "version": "2.1.0",
         "changelog": [
+            {
+                "version": "2.1.0",
+                "date": "2025-03-05",
+                "changes": [
+                    "新增模式十：管理技能文件夹（新建/删除分类文件夹、移动技能、查看分类结构）",
+                    "skills/ 目录支持分级存储，技能可按分类文件夹组织",
+                    "所有模式适配 path 字段定位技能，兼容平铺和嵌套结构",
+                    "模式四（上传）自动询问分类归属",
+                    "模式六（列出）按分类分组展示"
+                ]
+            },
             {
                 "version": "2.0.0",
                 "date": "2025-03-04",
@@ -25,12 +36,21 @@
         ]
     },
     "infra": {
-        "version": "1.0.0",
+        "version": "1.1.0",
         "files": [
             "generate-index.js",
             ".github/workflows/build-index.yml"
         ],
         "changelog": [
+            {
+                "version": "1.1.0",
+                "date": "2025-03-05",
+                "changes": [
+                    "generate-index.js 支持递归扫描 skills/ 下的分类子文件夹",
+                    "index.json 新增 category 和 path 字段",
+                    "向下兼容平铺结构（category 为空字符串）"
+                ]
+            },
             {
                 "version": "1.0.0",
                 "date": "2025-03-03",
