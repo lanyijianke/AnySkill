@@ -5,8 +5,8 @@
 <h1 align="center">AnySkill</h1>
 
 <p align="center">
-  <strong>One Skill to Rule Them All.</strong><br/>
-  Your private AI skill space — secure, transparent, on-demand.
+  <strong>Your Personal, Free Skill Management Terminal</strong><br/>
+  Store, sync, and load AI skills across any IDE — privately, securely, effortlessly.
 </p>
 
 <p align="center">
@@ -34,19 +34,33 @@
 
 ## What is AnySkill?
 
-AnySkill stores your AI skills in a private GitHub repository. Load them on-demand in any AI coding assistant with a single sentence — no manual file management needed. Each skill is a `SKILL.md` — write once, use everywhere.
+AnySkill is a personal skill management terminal that stores your AI agent skills in a private GitHub repository. Load them on-demand in any AI coding assistant — no manual file management, no project pollution. Your skills live in the cloud, always available, never lost.
+
+## Why AnySkill?
+
+### For Developers
+
+- **Lightweight** — Skills load into memory on demand and are discarded after use. Nothing is written to your project directory unless you explicitly download.
+- **Clean codebase** — No scattered config files or prompt collections across repositories. One central repo holds everything.
+- **Cross-IDE** — Works with Antigravity, Claude Code, Cursor, and OpenClaw. Same skills, any editor.
+
+### For Agent Users (OpenClaw)
+
+- **Cloud backup for your agents** — Your skills are stored in GitHub, not just on your local machine. If your container crashes, your OS resets, or you switch devices, every skill is instantly recoverable.
+- **One-command restore** — Tell the AI "sync all skills" and your entire library is back in seconds.
+- **Version history** — GitHub tracks every change. Roll back to any previous version at any time.
 
 ## Getting Started
 
-Open your AI IDE (Antigravity / Claude Code / Cursor / OpenClaw), and tell the AI:
+Open your AI IDE (Antigravity / Claude Code / Cursor / OpenClaw) and tell the AI:
 
 > **Read `https://github.com/lanyijianke/AnySkill` and help me install it**
 
 <!--
 AI INSTRUCTION — Follow these steps strictly:
 
-⚠️ Important constraints:
-- Do NOT git clone this repository! You only need to download the 1 file specified below.
+Important constraints:
+- Do NOT git clone this repository. You only need to download the 1 file specified below.
 - Do NOT download the entire AnySkill repository to the user's machine.
 - This repository is a template repository, not code the user needs to keep.
 
@@ -61,7 +75,7 @@ Installation steps:
 4. Read the downloaded SKILL.md and follow the "Step Zero" instructions to complete initialization.
 -->
 
-The AI will automatically download the engine, guide you to bind your repository, and complete setup. All without leaving the editor.
+The AI will download the engine, guide you through repository setup, and complete configuration — all without leaving the editor.
 
 <details>
 <summary>Alternative installation methods</summary>
@@ -85,14 +99,17 @@ curl -sSL https://raw.githubusercontent.com/lanyijianke/AnySkill/main/init.sh | 
 
 </details>
 
-## Features
+## Core Capabilities
 
-- **🔒 Private Repository** — Skills are stored in your own GitHub private repo. Tokens are saved locally only, never in version control.
-- **⚡ On-Demand Loading** — The AI automatically matches and loads required skills from the cloud into memory. Unloaded after use, keeping your project directory clean.
-- **📂 Structured Skills** — Each skill has its own folder, supporting scripts, config files, and companion files — not just a single Markdown.
-- **🤖 Auto Indexing** — GitHub Actions automatically rebuilds `index.json` on every push. Zero maintenance.
-- **💬 Natural Language** — All operations are triggered through conversation. Load, download, upload, delete — no commands to memorize.
-- **📁 Folder Organization** — Organize skills into category folders for better structure.
+| Capability | Description |
+|------------|-------------|
+| **On-demand loading** | AI reads skills from cloud into memory. No files written to your project. |
+| **Cloud sync** | Private GitHub repo as your single source of truth. |
+| **Structured skills** | Each skill is a folder with markdown, scripts, and config files. |
+| **Auto indexing** | GitHub Actions rebuilds `index.json` on every push. Zero maintenance. |
+| **Natural language ops** | Load, download, upload, delete — all via conversation. |
+| **Folder organization** | Group skills into categories for better structure. |
+| **Skill packs** | Batch install curated skill sets from [AnySkill-Packs](https://github.com/lanyijianke/AnySkill-Packs). |
 
 ## Operations
 
@@ -118,7 +135,7 @@ All operations are triggered via natural language:
  │                  │   load     ◀──── │  index.json ← auto-built    │
  │  .anyskill.json  │   download ◀──── │  skills/                    │
  │  + SKILL.md      │   sync     ◀──── │    frontend/                │
- │                  │   upload   ────▶ │      design-system/SKILL.md │
+ │  (engine only)   │   upload   ────▶ │      design-system/SKILL.md │
  │                  │   list     ◀──── │    my-crawler/              │
  │                  │                  │      SKILL.md               │
  └──────────────────┘                  │      scripts/run.py         │
@@ -143,7 +160,7 @@ Your instructions, rules, and prompts go here.
 The AI reads this file and gains the corresponding capability.
 ```
 
-After pushing, GitHub Actions automatically updates the index and the skill is immediately available across all your projects.
+After pushing, GitHub Actions automatically updates the index. The skill becomes available across all your projects immediately.
 
 ## Repository Structure
 
@@ -182,7 +199,21 @@ Tokens never leave your machine. All communication uses HTTPS via the GitHub API
 
 ## 什么是 AnySkill？
 
-AnySkill 将你的 AI 技能集中存储在一个 GitHub 私有仓库中。在任何 AI 编程助手里通过一句话按需加载，无需手动管理文件。每个技能就是一个 `SKILL.md`——写一次，到处用。
+AnySkill 是一个个人免费的技能管理终端，将你的 AI 技能集中存储在 GitHub 私有仓库中。在任何 AI 编程助手里按需加载，不污染项目目录，不散落在各个仓库。你的技能始终在云端，随时可用，永不丢失。
+
+## 为什么选择 AnySkill？
+
+### 对开发者
+
+- **轻量级** — 技能按需加载到内存，用完即弃。除非你主动下载，否则不会向项目目录写入任何文件。
+- **代码库干净** — 不再有散落在各仓库的配置文件和提示词集合。一个中心仓库管理一切。
+- **跨 IDE** — 支持 Antigravity、Claude Code、Cursor、OpenClaw。同一套技能，任意编辑器。
+
+### 对 Agent 用户 (OpenClaw)
+
+- **智能体的云端备份** — 技能存储在 GitHub 而非本地。容器崩溃、系统重装、更换设备，所有技能瞬间恢复。
+- **一句话还原** — 告诉 AI "同步所有技能"，整个技能库秒级回归。
+- **版本历史** — GitHub 记录每一次变更。随时回滚到任意历史版本。
 
 ## 快速开始
 
@@ -214,30 +245,17 @@ curl -sSL https://raw.githubusercontent.com/lanyijianke/AnySkill/main/init.sh | 
 
 </details>
 
-## 功能特性
+## 核心能力
 
-- **🔒 私有仓库** — 技能存储在你自己的 GitHub 私有仓库，Token 仅保存在本地，不进入版本控制。
-- **⚡ 按需加载** — AI 自动从云端匹配并加载所需技能到内存，用完即弃，项目目录保持干净。
-- **📂 结构化技能** — 每个技能一个文件夹，支持脚本、配置等伴随文件，不只是单个 Markdown。
-- **🤖 自动索引** — Push 后 GitHub Actions 自动重建 `index.json`，零运维。
-- **💬 自然语言** — 所有操作通过对话完成。加载、下载、上传、删除——不需要记任何命令。
-- **📁 分类管理** — 将技能按分类文件夹组织，支持新建/删除/移动。
-
-## 操作方式
-
-所有操作均通过自然语言触发：
-
-| 操作 | 触发方式 | 说明 |
-|------|---------|------|
-| 加载 | *自动触发* | 从云端读取技能到内存，用完即弃 |
-| 下载 | "下载 XX 技能" | 下载指定技能到本地 |
-| 全量同步 | "下载所有技能" | 批量拉取全部技能 |
-| 上传 | "上传技能" | 创建技能文件夹并 push |
-| 更新 | "更新 XX 技能" | 修改已有技能内容并 push |
-| 列举 | "列出技能" | 展示云端所有技能 |
-| 删除 | "删除 XX 技能" | 从仓库中移除技能 |
-| 文件夹 | "新建/移动文件夹" | 管理分类文件夹 |
-| 组合包 | "安装 XX 组合包" | 从 [AnySkill-Packs](https://github.com/lanyijianke/AnySkill-Packs) 批量安装 |
+| 能力 | 说明 |
+|------|------|
+| **按需加载** | AI 从云端读取技能到内存，不写入项目目录 |
+| **云端同步** | GitHub 私有仓库作为唯一数据源 |
+| **结构化技能** | 每个技能一个文件夹，支持脚本、配置等伴随文件 |
+| **自动索引** | 推送后 GitHub Actions 自动重建 index.json |
+| **自然语言操作** | 加载、下载、上传、删除——全部通过对话完成 |
+| **分类管理** | 按文件夹组织技能，支持新建/删除/移动 |
+| **技能组合包** | 从 [AnySkill-Packs](https://github.com/lanyijianke/AnySkill-Packs) 批量安装 |
 
 ## 安全性
 
