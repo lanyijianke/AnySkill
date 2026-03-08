@@ -1,12 +1,1 @@
-[
-  {
-    "name": "test-skill",
-    "description": "A test skill",
-    "category": "testcat",
-    "path": "testcat/test-skill",
-    "file": "testcat/test-skill/SKILL.md",
-    "files": [
-      "testcat/test-skill/SKILL.md"
-    ]
-  }
-]
+[]
