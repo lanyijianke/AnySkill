@@ -30,4 +30,6 @@ jobs:
           git add index.json
           # Only commit if there are changes
           git diff --staged --quiet || git commit -m "chore: auto-update index.json"
+          # Pull with rebase to handle concurrent pushes from multi-commit operations
+          git pull --rebase origin main || true
           git push
