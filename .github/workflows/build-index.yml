@@ -10,11 +10,18 @@ on:
 permissions:
   contents: write
 
+# Only run one instance at a time; cancel older runs
+concurrency:
+  group: build-index
+  cancel-in-progress: true
+
 jobs:
   build-index:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -30,6 +37,7 @@ jobs:
           git add index.json
           # Only commit if there are changes
           git diff --staged --quiet || git commit -m "chore: auto-update index.json"
-          # Pull with rebase to handle concurrent pushes from multi-commit operations
-          git pull --rebase origin main || true
-          git push
+          # Retry push with pull-rebase up to 3 times
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push && break || sleep 2
+          done
