@@ -36,12 +36,20 @@
         ]
     },
     "infra": {
-        "version": "1.1.0",
+        "version": "1.2.0",
         "files": [
             "generate-index.js",
             ".github/workflows/build-index.yml"
         ],
         "changelog": [
+            {
+                "version": "1.2.0",
+                "date": "2025-03-09",
+                "changes": [
+                    "build-index.yml 新增 git pull --rebase 防止并发推送冲突",
+                    "修复多文件操作（移动/删除技能）触发多个 Actions 时 push 被拒绝的问题"
+                ]
+            },
             {
                 "version": "1.1.0",
                 "date": "2025-03-05",
